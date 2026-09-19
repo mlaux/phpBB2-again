@@ -55,7 +55,7 @@ if( isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) |
 	if( ( isset($_POST['login']) || isset($_GET['login']) ) && (!$userdata['session_logged_in'] || isset($_POST['admin'])) )
 	{
 		$username = isset($_POST['username']) ? phpbb_clean_username($_POST['username']) : '';
-		$password = isset($_POST['password']) ? $_POST['password'] : '';
+		$password = phpbb_request_password('password');
 
 		$sql = "SELECT user_id, username, user_password, user_active, user_level, user_login_tries, user_last_login_try
 			FROM " . USERS_TABLE . "
@@ -87,7 +87,7 @@ if( isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) |
 					message_die(GENERAL_MESSAGE, sprintf($lang['Login_attempts_exceeded'], $board_config['max_login_attempts'], $board_config['login_reset_time']));
 				}
 
-				if( md5($password) == $row['user_password'] && $row['user_active'] )
+				if( phpbb_check_password($password, $row['user_password']) && $row['user_active'] )
 				{
 					$autologin = ( isset($_POST['autologin']) ) ? TRUE : 0;
 

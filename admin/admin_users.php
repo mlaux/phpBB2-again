@@ -340,8 +340,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 			}
 			else
 			{
-				$password = md5($password);
-				$passwd_sql = "user_password = '$password', ";
+				$passwd_sql = "user_password = '" . phpbb_hash_password(phpbb_request_password('password')) . "', ";
 			}
 		}
 		else if( $password && !$password_confirm )

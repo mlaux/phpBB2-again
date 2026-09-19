@@ -872,10 +872,10 @@ else
 				}
 			}
 
-			$admin_pass_md5 = ($confirm && $userdata['user_level'] == ADMIN) ? $admin_pass1 : md5($admin_pass1);
+			$admin_pass_hash = phpbb_hash_password(stripslashes($admin_pass1));
 
 			$sql = "UPDATE " . $table_prefix . "users 
-				SET username = '" . str_replace("\'", "''", $admin_name) . "', user_password='" . str_replace("\'", "''", $admin_pass_md5) . "', user_lang = '" . str_replace("\'", "''", $language) . "', user_email='" . str_replace("\'", "''", $board_email) . "'
+				SET username = '" . str_replace("\'", "''", $admin_name) . "', user_password='$admin_pass_hash', user_lang = '" . str_replace("\'", "''", $language) . "', user_email='" . str_replace("\'", "''", $board_email) . "'
 				WHERE username = 'Admin'";
 			if (!$db->sql_query($sql))
 			{

@@ -170,6 +170,34 @@ function dss_rand()
 
 	return substr($val, 4, 16);
 }
+
+//
+// common.php runs addslashes() on _POST, don't want this for passwords
+//
+function phpbb_request_password($key)
+{
+	return isset($_POST[$key]) ? stripslashes($_POST[$key]) : '';
+}
+
+//
+// Password hashing - to DB -> phpbb_hash_password, from DB ->
+// phpbb_check_password
+//
+function phpbb_hash_password($password)
+{
+	return password_hash($password, PASSWORD_DEFAULT);
+}
+
+function phpbb_check_password($password, $hash)
+{
+	if ($hash === '' || $password === '')
+	{
+		return false;
+	}
+
+	return password_verify($password, $hash);
+}
+
 //
 // Get Userdata, $user can be username or user_id. If force_str is true, the username will be forced.
 //

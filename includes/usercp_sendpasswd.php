@@ -55,7 +55,7 @@ if ( isset($_POST['submit']) )
 			$user_password = gen_rand_string(false);
 			
 			$sql = "UPDATE " . USERS_TABLE . " 
-				SET user_newpasswd = '" . md5($user_password) . "', user_actkey = '$user_actkey'  
+				SET user_newpasswd = '" . phpbb_hash_password($user_password) . "', user_actkey = '$user_actkey'  
 				WHERE user_id = " . $row['user_id'];
 			if ( !$db->sql_query($sql) )
 			{

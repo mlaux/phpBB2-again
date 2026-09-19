@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 if ( !empty($setmodules) )
 {
@@ -49,7 +49,7 @@ else
 if ( isset($_POST['mode']) || isset($_GET['mode']) )
 {
 	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else
 {
@@ -255,7 +255,7 @@ else if ( isset($_POST['group_update']) )
 	else
 	{
 		$group_type = isset($_POST['group_type']) ? intval($_POST['group_type']) : GROUP_OPEN;
-		$group_name = isset($_POST['group_name']) ? htmlspecialchars(trim($_POST['group_name'])) : '';
+		$group_name = isset($_POST['group_name']) ? htmlspecialchars(trim($_POST['group_name']), ENT_COMPAT, 'ISO-8859-1') : '';
 		$group_description = isset($_POST['group_description']) ? trim($_POST['group_description']) : '';
 		$group_moderator = isset($_POST['username']) ? $_POST['username'] : '';
 		$delete_old_moderator = isset($_POST['delete_old_moderator']) ? true : false;

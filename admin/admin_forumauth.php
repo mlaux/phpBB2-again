@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
@@ -102,7 +102,7 @@ if( isset($_POST['submit']) )
 	{
 		if(isset($_POST['simpleauth']))
 		{
-			$simple_ary = $simple_auth_ary[intval($_POST['simpleauth'])];
+			$simple_ary = isset($simple_auth_ary[intval($_POST['simpleauth'])]) ? $simple_auth_ary[intval($_POST['simpleauth'])] : array();
 
 			for($i = 0; $i < count($simple_ary); $i++)
 			{

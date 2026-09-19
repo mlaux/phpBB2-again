@@ -417,7 +417,7 @@ if( ( $total_categories = count($category_rows) ) )
 								$last_post = $lang['No_Posts'];
 							}
 
-							if ( count($forum_moderators[$forum_id]) > 0 )
+							if ( !empty($forum_moderators[$forum_id]) )
 							{
 								$l_moderators = ( count($forum_moderators[$forum_id]) == 1 ) ? $lang['Moderator'] : $lang['Moderators'];
 								$moderator_list = implode(', ', $forum_moderators[$forum_id]);

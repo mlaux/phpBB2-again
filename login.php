@@ -99,7 +99,7 @@ if( isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) |
 
 					if( $session_id )
 					{
-						$url = ( !empty($_POST['redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($_POST['redirect'])) : "index.$phpEx";
+						$url = ( !empty($_POST['redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($_POST['redirect'], ENT_COMPAT, 'ISO-8859-1')) : "index.$phpEx";
 						redirect(append_sid($url, true));
 					}
 					else
@@ -120,7 +120,7 @@ if( isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) |
 					}
 				}
 
-				$redirect = ( !empty($_POST['redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($_POST['redirect'])) : '';
+				$redirect = ( !empty($_POST['redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($_POST['redirect'], ENT_COMPAT, 'ISO-8859-1')) : '';
 				$redirect = str_replace('?', '&', $redirect);
 
 				if (strstr(urldecode($redirect), "\n") || strstr(urldecode($redirect), "\r") || strstr(urldecode($redirect), ';url'))
@@ -139,7 +139,7 @@ if( isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) |
 		}
 		else
 		{
-			$redirect = ( !empty($_POST['redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($_POST['redirect'])) : "";
+			$redirect = ( !empty($_POST['redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($_POST['redirect'], ENT_COMPAT, 'ISO-8859-1')) : "";
 			$redirect = str_replace("?", "&", $redirect);
 
 			if (strstr(urldecode($redirect), "\n") || strstr(urldecode($redirect), "\r") || strstr(urldecode($redirect), ';url'))
@@ -171,7 +171,7 @@ if( isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) |
 
 		if (!empty($_POST['redirect']) || !empty($_GET['redirect']))
 		{
-			$url = (!empty($_POST['redirect'])) ? htmlspecialchars($_POST['redirect']) : htmlspecialchars($_GET['redirect']);
+			$url = (!empty($_POST['redirect'])) ? htmlspecialchars($_POST['redirect'], ENT_COMPAT, 'ISO-8859-1') : htmlspecialchars($_GET['redirect'], ENT_COMPAT, 'ISO-8859-1');
 			$url = str_replace('&amp;', '&', $url);
 			redirect(append_sid($url, true));
 		}
@@ -182,7 +182,7 @@ if( isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) |
 	}
 	else
 	{
-		$url = ( !empty($_POST['redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($_POST['redirect'])) : "index.$phpEx";
+		$url = ( !empty($_POST['redirect']) ) ? str_replace('&amp;', '&', htmlspecialchars($_POST['redirect'], ENT_COMPAT, 'ISO-8859-1')) : "index.$phpEx";
 		redirect(append_sid($url, true));
 	}
 }

@@ -38,7 +38,7 @@ $start = ($start < 0) ? 0 : $start;
 
 if ( isset($_GET['mode']) || isset($_POST['mode']) )
 {
-	$mode = ( isset($_POST['mode']) ) ? htmlspecialchars($_POST['mode']) : htmlspecialchars($_GET['mode']);
+	$mode = ( isset($_POST['mode']) ) ? htmlspecialchars($_POST['mode'], ENT_COMPAT, 'ISO-8859-1') : htmlspecialchars($_GET['mode'], ENT_COMPAT, 'ISO-8859-1');
 }
 else
 {

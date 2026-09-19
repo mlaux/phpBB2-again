@@ -30,7 +30,7 @@ if ( !defined('IN_PHPBB') )
 if ( isset($_POST['submit']) )
 {
 	$username = ( !empty($_POST['username']) ) ? phpbb_clean_username($_POST['username']) : '';
-	$email = ( !empty($_POST['email']) ) ? trim(strip_tags(htmlspecialchars($_POST['email']))) : '';
+	$email = ( !empty($_POST['email']) ) ? trim(strip_tags(htmlspecialchars($_POST['email'], ENT_COMPAT, 'ISO-8859-1'))) : '';
 
 	$sql = "SELECT user_id, username, user_email, user_active, user_lang 
 		FROM " . USERS_TABLE . " 

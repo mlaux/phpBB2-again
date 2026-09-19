@@ -23,7 +23,7 @@
 *	This file will be used for modifying the smiley settings for a board.
 **************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 //
 // First we do the setmodules stuff for the admin cp.
@@ -63,7 +63,7 @@ if ($cancel)
 if( isset($_POST['mode']) || isset($_GET['mode']) )
 {
 	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else
 {
@@ -437,7 +437,7 @@ else if ( $mode != "" )
 			$smile_code = ( isset($_POST['smile_code']) ) ? trim($_POST['smile_code']) : '';
 			$smile_url = ( isset($_POST['smile_url']) ) ? trim($_POST['smile_url']) : '';
 			$smile_url = phpbb_ltrim(basename($smile_url), "'");
-			$smile_emotion = ( isset($_POST['smile_emotion']) ) ? htmlspecialchars(trim($_POST['smile_emotion'])) : '';
+			$smile_emotion = ( isset($_POST['smile_emotion']) ) ? htmlspecialchars(trim($_POST['smile_emotion']), ENT_COMPAT, 'ISO-8859-1') : '';
 			$smile_id = ( isset($_POST['smile_id']) ) ? intval($_POST['smile_id']) : 0;
 			$smile_code = trim($smile_code);
 			$smile_url = trim($smile_url);
@@ -482,7 +482,7 @@ else if ( $mode != "" )
 			$smile_code = ( isset($_POST['smile_code']) ) ? $_POST['smile_code'] : '';
 			$smile_url = ( isset($_POST['smile_url']) ) ? $_POST['smile_url'] : '';
 			$smile_url = phpbb_ltrim(basename($smile_url), "'");
-			$smile_emotion = ( isset($_POST['smile_emotion']) ) ? htmlspecialchars(trim($_POST['smile_emotion'])) : '';
+			$smile_emotion = ( isset($_POST['smile_emotion']) ) ? htmlspecialchars(trim($_POST['smile_emotion']), ENT_COMPAT, 'ISO-8859-1') : '';
 			$smile_code = trim($smile_code);
 			$smile_url = trim($smile_url);
 

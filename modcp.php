@@ -81,7 +81,7 @@ $unlock = ( isset($_POST['unlock']) ) ? TRUE : FALSE;
 if ( isset($_POST['mode']) || isset($_GET['mode']) )
 {
 	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else
 {
@@ -238,7 +238,7 @@ switch( $mode )
 
 			include($phpbb_root_path . 'includes/functions_search.'.$phpEx);
 
-			$topics = ( isset($_POST['topic_id_list']) ) ? $_POST['topic_id_list'] : array($topic_id);
+			$topics = ( isset($_POST['topic_id_list']) && is_array($_POST['topic_id_list']) ) ? $_POST['topic_id_list'] : array($topic_id);
 
 			$topic_id_sql = '';
 			for($i = 0; $i < count($topics); $i++)
@@ -425,7 +425,7 @@ switch( $mode )
 
 			if ( isset($_POST['topic_id_list']) )
 			{
-				$topics = $_POST['topic_id_list'];
+				$topics = is_array($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array();
 				for($i = 0; $i < count($topics); $i++)
 				{
 					$hidden_fields .= '<input type="hidden" name="topic_id_list[]" value="' . intval($topics[$i]) . '" />';
@@ -490,7 +490,7 @@ switch( $mode )
 
 			if ( $new_forum_id != $old_forum_id )
 			{
-				$topics = ( isset($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
+				$topics = ( isset($_POST['topic_id_list']) && is_array($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
 
 				$topic_list = '';
 				for($i = 0; $i < count($topics); $i++)
@@ -585,7 +585,7 @@ switch( $mode )
 
 			if ( isset($_POST['topic_id_list']) )
 			{
-				$topics = $_POST['topic_id_list'];
+				$topics = is_array($_POST['topic_id_list']) ? $_POST['topic_id_list'] : array();
 
 				for($i = 0; $i < count($topics); $i++)
 				{
@@ -630,7 +630,7 @@ switch( $mode )
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
 
-		$topics = ( isset($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
+		$topics = ( isset($_POST['topic_id_list']) && is_array($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
 
 		$topic_id_sql = '';
 		for($i = 0; $i < count($topics); $i++)
@@ -675,7 +675,7 @@ switch( $mode )
 			message_die(GENERAL_MESSAGE, $lang['None_selected']);
 		}
 
-		$topics = ( isset($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
+		$topics = ( isset($_POST['topic_id_list']) && is_array($_POST['topic_id_list']) ) ?  $_POST['topic_id_list'] : array($topic_id);
 
 		$topic_id_sql = '';
 		for($i = 0; $i < count($topics); $i++)
@@ -722,7 +722,7 @@ switch( $mode )
 
 		if (isset($_POST['split_type_all']) || isset($_POST['split_type_beyond']))
 		{
-			$posts = $_POST['post_id_list'];
+			$posts = is_array($_POST['post_id_list']) ? $_POST['post_id_list'] : array();
 
 			for ($i = 0; $i < count($posts); $i++)
 			{
@@ -777,7 +777,7 @@ switch( $mode )
 				}
 				while ($row = $db->sql_fetchrow($result));
 
-				$post_subject = trim(htmlspecialchars($_POST['subject']));
+				$post_subject = trim(htmlspecialchars($_POST['subject'], ENT_COMPAT, 'ISO-8859-1'));
 				if (empty($post_subject))
 				{
 					message_die(GENERAL_MESSAGE, $lang['Empty_subject']);
@@ -1003,7 +1003,7 @@ switch( $mode )
 		}
 
 		$ip_this_post = decode_ip($post_row['poster_ip']);
-		$ip_this_post = ( $rdns_ip_num == $ip_this_post ) ? htmlspecialchars(gethostbyaddr($ip_this_post)) : $ip_this_post;
+		$ip_this_post = ( $rdns_ip_num == $ip_this_post ) ? htmlspecialchars(gethostbyaddr($ip_this_post), ENT_COMPAT, 'ISO-8859-1') : $ip_this_post;
 
 		$poster_id = $post_row['poster_id'];
 
@@ -1049,7 +1049,7 @@ switch( $mode )
 				}
 
 				$ip = decode_ip($row['poster_ip']);
-				$ip = ( $rdns_ip_num == $row['poster_ip'] || $rdns_ip_num == 'all') ? htmlspecialchars(gethostbyaddr($ip)) : $ip;
+				$ip = ( $rdns_ip_num == $row['poster_ip'] || $rdns_ip_num == 'all') ? htmlspecialchars(gethostbyaddr($ip), ENT_COMPAT, 'ISO-8859-1') : $ip;
 
 				$row_color = ( !($i % 2) ) ? $theme['td_color1'] : $theme['td_color2'];
 				$row_class = ( !($i % 2) ) ? $theme['td_class1'] : $theme['td_class2'];

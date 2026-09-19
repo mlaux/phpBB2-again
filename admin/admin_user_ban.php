@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 if ( !empty($setmodules) )
 {
@@ -127,6 +127,10 @@ if ( isset($_POST['submit']) )
 			else if ( preg_match('/^([\w\-_]\.?){2,}$/is', trim($ip_list_temp[$i])) )
 			{
 				$ip = gethostbynamel(trim($ip_list_temp[$i]));
+				if (!is_array($ip))
+				{
+					$ip = array();
+				}
 
 				for($j = 0; $j < count($ip); $j++)
 				{

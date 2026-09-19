@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
@@ -104,7 +104,7 @@ $disallowed = $db->sql_fetchrowset($result);
 //
 $disallow_select = '<select name="disallowed_id">';
 
-if( trim($disallowed) == "" )
+if( empty($disallowed) )
 {
 	$disallow_select .= '<option value="">' . $lang['no_disallowed'] . '</option>';
 }

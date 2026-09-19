@@ -364,7 +364,7 @@ $select_post_days .= '</select>';
 //
 if ( !empty($_POST['postorder']) || !empty($_GET['postorder']) )
 {
-	$post_order = (!empty($_POST['postorder'])) ? htmlspecialchars($_POST['postorder']) : htmlspecialchars($_GET['postorder']);
+	$post_order = (!empty($_POST['postorder'])) ? htmlspecialchars($_POST['postorder'], ENT_COMPAT, 'ISO-8859-1') : htmlspecialchars($_GET['postorder'], ENT_COMPAT, 'ISO-8859-1');
 	$post_time_order = ($post_order == "asc") ? "ASC" : "DESC";
 }
 else

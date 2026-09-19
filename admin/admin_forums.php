@@ -19,7 +19,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
@@ -55,7 +55,7 @@ $forum_auth_ary = array(
 if( isset($_POST['mode']) || isset($_GET['mode']) )
 {
 	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else
 {

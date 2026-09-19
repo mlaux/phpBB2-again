@@ -104,7 +104,7 @@ if (
 	if ( $mode == 'editprofile' )
 	{
 		$user_id = intval($_POST['user_id']);
-		$current_email = trim(htmlspecialchars($_POST['current_email']));
+		$current_email = trim(htmlspecialchars($_POST['current_email'], ENT_COMPAT, 'ISO-8859-1'));
 	}
 
 	$strip_var_list = array('email' => 'email', 'icq' => 'icq', 'aim' => 'aim', 'msn' => 'msn', 'yim' => 'yim', 'website' => 'website', 'location' => 'location', 'occupation' => 'occupation', 'interests' => 'interests', 'confirm_code' => 'confirm_code');
@@ -116,7 +116,7 @@ if (
 	{
 		if ( !empty($_POST[$param]) )
 		{
-			$$var = trim(htmlspecialchars($_POST[$param]));
+			$$var = trim(htmlspecialchars($_POST[$param], ENT_COMPAT, 'ISO-8859-1'));
 		}
 	}
 
@@ -169,7 +169,7 @@ if (
 	{
 		if ( preg_match('/^[a-z_]+$/i', $_POST['language']) )
 		{
-			$user_lang = htmlspecialchars($_POST['language']);
+			$user_lang = htmlspecialchars($_POST['language'], ENT_COMPAT, 'ISO-8859-1');
 		}
 		else
 		{
@@ -193,10 +193,10 @@ if (
 	}
 	$row = $db->sql_fetchrow($result);
 	$board_config['default_dateformat'] = $row['config_value'];
-	$user_dateformat = ( !empty($_POST['dateformat']) ) ? trim(htmlspecialchars($_POST['dateformat'])) : $board_config['default_dateformat'];
+	$user_dateformat = ( !empty($_POST['dateformat']) ) ? trim(htmlspecialchars($_POST['dateformat'], ENT_COMPAT, 'ISO-8859-1')) : $board_config['default_dateformat'];
 
-	$user_avatar_local = ( isset($_POST['avatarselect']) && !empty($_POST['submitavatar']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars($_POST['avatarselect']) : ( ( isset($_POST['avatarlocal'])  ) ? htmlspecialchars($_POST['avatarlocal']) : '' );
-	$user_avatar_category = ( isset($_POST['avatarcatname']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars($_POST['avatarcatname']) : '' ;
+	$user_avatar_local = ( isset($_POST['avatarselect']) && !empty($_POST['submitavatar']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars($_POST['avatarselect'], ENT_COMPAT, 'ISO-8859-1') : ( ( isset($_POST['avatarlocal'])  ) ? htmlspecialchars($_POST['avatarlocal'], ENT_COMPAT, 'ISO-8859-1') : '' );
+	$user_avatar_category = ( isset($_POST['avatarcatname']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars($_POST['avatarcatname'], ENT_COMPAT, 'ISO-8859-1') : '' ;
 
 	$user_avatar_remoteurl = ( !empty($_POST['avatarremoteurl']) ) ? trim(htmlspecialchars($_POST['avatarremoteurl'])) : '';
 	$user_avatar_upload = ( !empty($_POST['avatarurl']) ) ? trim($_POST['avatarurl']) : ( ( $_FILES['avatar']['tmp_name'] != "none") ? $_FILES['avatar']['tmp_name'] : '' );
@@ -211,9 +211,9 @@ if (
 	{
 		$username = stripslashes($username);
 		$email = stripslashes($email);
-		$cur_password = htmlspecialchars(stripslashes($cur_password));
-		$new_password = htmlspecialchars(stripslashes($new_password));
-		$password_confirm = htmlspecialchars(stripslashes($password_confirm));
+		$cur_password = htmlspecialchars(stripslashes($cur_password), ENT_COMPAT, 'ISO-8859-1');
+		$new_password = htmlspecialchars(stripslashes($new_password), ENT_COMPAT, 'ISO-8859-1');
+		$password_confirm = htmlspecialchars(stripslashes($password_confirm), ENT_COMPAT, 'ISO-8859-1');
 
 		$icq = stripslashes($icq);
 		$aim = stripslashes($aim);
@@ -224,7 +224,7 @@ if (
 		$location = stripslashes($location);
 		$occupation = stripslashes($occupation);
 		$interests = stripslashes($interests);
-		$signature = htmlspecialchars(stripslashes($signature));
+		$signature = htmlspecialchars(stripslashes($signature), ENT_COMPAT, 'ISO-8859-1');
 
 		$user_lang = stripslashes($user_lang);
 		$user_dateformat = stripslashes($user_dateformat);
@@ -288,7 +288,7 @@ if ( isset($_POST['submit']) )
 		}
 		else
 		{
-			$confirm_id = htmlspecialchars($_POST['confirm_id']);
+			$confirm_id = htmlspecialchars($_POST['confirm_id'], ENT_COMPAT, 'ISO-8859-1');
 			if (!preg_match('/^[A-Za-z0-9]+$/', $confirm_id))
 			{
 				$confirm_id = '';
@@ -859,7 +859,7 @@ if( isset($_POST['avatargallery']) && !$error )
 {
 	include($phpbb_root_path . 'includes/usercp_avatar.'.$phpEx);
 
-	$avatar_category = ( !empty($_POST['avatarcategory']) ) ? htmlspecialchars($_POST['avatarcategory']) : '';
+	$avatar_category = ( !empty($_POST['avatarcategory']) ) ? htmlspecialchars($_POST['avatarcategory'], ENT_COMPAT, 'ISO-8859-1') : '';
 
 	$template->set_filenames(array(
 		'body' => 'profile_avatar_gallery.tpl')

@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
@@ -57,7 +57,7 @@ foreach ($params as $var => $param)
 $user_id = intval($user_id);
 $group_id = intval($group_id);
 $adv = intval($adv);
-$mode = htmlspecialchars($mode);
+$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 
 //
 // Start program - define vars
@@ -733,6 +733,10 @@ else if ( ( $mode == 'user' && ( isset($_POST['username']) || $user_id ) ) || ( 
 			if ( $forum_auth_level[$forum_id] == AUTH_ACL )
 			{
 				$allowed = 1;
+				if (!isset($forum_auth_level_fields[$forum_id]))
+				{
+					$forum_auth_level_fields[$forum_id] = array();
+				}
 
 				for($j = 0; $j < count($forum_auth_level_fields[$forum_id]); $j++)
 				{

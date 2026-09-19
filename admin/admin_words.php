@@ -27,7 +27,7 @@ if( !empty($setmodules) )
 	return;
 }
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 //
 // Load default header
@@ -48,7 +48,7 @@ if ($cancel)
 if( isset($_GET['mode']) || isset($_POST['mode']) )
 {
 	$mode = (isset($_GET['mode'])) ? $_GET['mode'] : $_POST['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else 
 {
@@ -107,8 +107,8 @@ if( $mode != "" )
 		}
 
 		$template->assign_vars(array(
-			"WORD" => htmlspecialchars($word_info['word']),
-			"REPLACEMENT" => htmlspecialchars($word_info['replacement']),
+			"WORD" => htmlspecialchars($word_info['word'], ENT_COMPAT, 'ISO-8859-1'),
+			"REPLACEMENT" => htmlspecialchars($word_info['replacement'], ENT_COMPAT, 'ISO-8859-1'),
 
 			"L_WORDS_TITLE" => $lang['Words_title'],
 			"L_WORDS_TEXT" => $lang['Words_explain'],
@@ -257,8 +257,8 @@ else
 		$template->assign_block_vars("words", array(
 			"ROW_COLOR" => "#" . $row_color,
 			"ROW_CLASS" => $row_class,
-			"WORD" => htmlspecialchars($word),
-			"REPLACEMENT" => htmlspecialchars($replacement),
+			"WORD" => htmlspecialchars($word, ENT_COMPAT, 'ISO-8859-1'),
+			"REPLACEMENT" => htmlspecialchars($replacement, ENT_COMPAT, 'ISO-8859-1'),
 
 			"U_WORD_EDIT" => append_sid("admin_words.$phpEx?mode=edit&amp;id=$word_id"),
 			"U_WORD_DELETE" => append_sid("admin_words.$phpEx?mode=delete&amp;id=$word_id"))

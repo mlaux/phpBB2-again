@@ -77,7 +77,7 @@ function get_db_stat($mode)
 // added at phpBB 2.0.11 to properly format the username
 function phpbb_clean_username($username)
 {
-	$username = substr(htmlspecialchars(str_replace("\'", "'", trim($username))), 0, 25);
+	$username = substr(htmlspecialchars(str_replace("\'", "'", trim($username)), ENT_COMPAT, 'ISO-8859-1'), 0, 25);
 	$username = phpbb_rtrim($username, "\\");
 	$username = str_replace("'", "\'", $username);
 

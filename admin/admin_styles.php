@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
@@ -59,7 +59,7 @@ if ($cancel)
 if( isset($_GET['mode']) || isset($_POST['mode']) )
 {
 	$mode = ( isset($_GET['mode']) ) ? $_GET['mode'] : $_POST['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else 
 {
@@ -77,7 +77,7 @@ switch( $mode )
 
 			include($phpbb_root_path. "templates/" . basename($install_to) . "/theme_info.cfg");
 
-			$template_name = $$install_to;
+			$template_name = (isset($$install_to) && is_array($$install_to)) ? $$install_to : array();
 			$found = FALSE; 
 			
 			for($i = 0; $i < count($template_name) && !$found; $i++)
@@ -139,6 +139,10 @@ switch( $mode )
 						if( @file_exists(@phpbb_realpath($phpbb_root_path. "templates/" . $sub_dir . "/theme_info.cfg")) )
 						{
 							include($phpbb_root_path. "templates/" . $sub_dir . "/theme_info.cfg");
+							if (!isset($$sub_dir) || !is_array($$sub_dir))
+							{
+								$$sub_dir = array();
+							}
 							
 							for($i = 0; $i < count($$sub_dir); $i++)
 							{
@@ -748,7 +752,7 @@ switch( $mode )
 				// Unable to open the file writeable do something here as an attempt
 				// to get around that...
 				//
-				$s_hidden_fields = '<input type="hidden" name="theme_info" value="' . htmlspecialchars($theme_data) . '" />';
+				$s_hidden_fields = '<input type="hidden" name="theme_info" value="' . htmlspecialchars($theme_data, ENT_COMPAT, 'ISO-8859-1') . '" />';
 				$s_hidden_fields .= '<input type="hidden" name="send_file" value="1" /><input type="hidden" name="mode" value="export" />';
 				
 				$download_form = '<form action="' . append_sid("admin_styles.$phpEx") . '" method="post"><input class="mainoption" type="submit" name="submit" value="' . $lang['Download'] . '" />' . $s_hidden_fields;

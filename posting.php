@@ -35,7 +35,7 @@ foreach ($params as $var => $param)
 {
 	if ( !empty($_POST[$param]) || !empty($_GET[$param]) )
 	{
-		$$var = ( !empty($_POST[$param]) ) ? htmlspecialchars($_POST[$param]) : htmlspecialchars($_GET[$param]);
+		$$var = ( !empty($_POST[$param]) ) ? htmlspecialchars($_POST[$param], ENT_COMPAT, 'ISO-8859-1') : htmlspecialchars($_GET[$param], ENT_COMPAT, 'ISO-8859-1');
 	}
 	else
 	{
@@ -621,11 +621,11 @@ else if ( $submit || $confirm )
 
 if( $refresh || isset($_POST['del_poll_option']) || $error_msg != '' )
 {
-	$username = ( !empty($_POST['username']) ) ? htmlspecialchars(trim(stripslashes($_POST['username']))) : '';
-	$subject = ( !empty($_POST['subject']) ) ? htmlspecialchars(trim(stripslashes($_POST['subject']))) : '';
-	$message = ( !empty($_POST['message']) ) ? htmlspecialchars(trim(stripslashes($_POST['message']))) : '';
+	$username = ( !empty($_POST['username']) ) ? htmlspecialchars(trim(stripslashes($_POST['username'])), ENT_COMPAT, 'ISO-8859-1') : '';
+	$subject = ( !empty($_POST['subject']) ) ? htmlspecialchars(trim(stripslashes($_POST['subject'])), ENT_COMPAT, 'ISO-8859-1') : '';
+	$message = ( !empty($_POST['message']) ) ? htmlspecialchars(trim(stripslashes($_POST['message'])), ENT_COMPAT, 'ISO-8859-1') : '';
 
-	$poll_title = ( !empty($_POST['poll_title']) ) ? htmlspecialchars(trim(stripslashes($_POST['poll_title']))) : '';
+	$poll_title = ( !empty($_POST['poll_title']) ) ? htmlspecialchars(trim(stripslashes($_POST['poll_title'])), ENT_COMPAT, 'ISO-8859-1') : '';
 	$poll_length = ( isset($_POST['poll_length']) ) ? max(0, intval($_POST['poll_length'])) : 0;
 
 	$poll_options = array();
@@ -639,14 +639,14 @@ if( $refresh || isset($_POST['del_poll_option']) || $error_msg != '' )
 			}
 			else if ( !empty($option_text) ) 
 			{
-				$poll_options[intval($option_id)] = htmlspecialchars(trim(stripslashes($option_text)));
+				$poll_options[intval($option_id)] = htmlspecialchars(trim(stripslashes($option_text)), ENT_COMPAT, 'ISO-8859-1');
 			}
 		}
 	}
 
 	if ( isset($poll_add) && !empty($_POST['add_poll_option_text']) )
 	{
-		$poll_options[] = htmlspecialchars(trim(stripslashes($_POST['add_poll_option_text'])));
+		$poll_options[] = htmlspecialchars(trim(stripslashes($_POST['add_poll_option_text'])), ENT_COMPAT, 'ISO-8859-1');
 	}
 
 	if ( $mode == 'newtopic' || $mode == 'reply')

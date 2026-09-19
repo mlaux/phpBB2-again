@@ -109,7 +109,7 @@ $template->assign_vars(array(
 
 for($i = 0; $i < count($faq_block); $i++)
 {
-	if( count($faq_block[$i]) )
+	if( !empty($faq_block[$i]) )
 	{
 		$template->assign_block_vars('faq_block', array(
 			'BLOCK_TITLE' => $faq_block_titles[$i])

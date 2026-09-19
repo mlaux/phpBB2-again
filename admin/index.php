@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 //
 // Load default header
@@ -161,7 +161,8 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 
 	$start_date = create_date($board_config['default_dateformat'], $board_config['board_startdate'], $board_config['board_timezone']);
 
-	$boarddays = ( time() - $board_config['board_startdate'] ) / 86400;
+	// PHP 8 throws on division by zero, so treat a brand new board as one second old
+	$boarddays = max(1, time() - $board_config['board_startdate']) / 86400;
 
 	$posts_per_day = sprintf("%.2f", $total_posts / $boarddays);
 	$topics_per_day = sprintf("%.2f", $total_topics / $boarddays);

@@ -222,8 +222,7 @@ function guess_lang()
 // ---------
 
 // Begin
-error_reporting  (E_ERROR | E_WARNING | E_PARSE); // This will NOT report uninitialized variables
-set_magic_quotes_runtime(0); // Disable magic_quotes_runtime
+error_reporting(E_ERROR | E_PARSE); // This will NOT report uninitialized variables
 
 // PHP5 with register_long_arrays off?
 if (!isset($_POST) && isset($_POST))
@@ -243,7 +242,7 @@ if (!isset($_POST) && isset($_POST))
 }
 
 // Slash data if it isn't slashed
-if (!get_magic_quotes_gpc())
+if (true) // magic_quotes_gpc no longer exists; always slash input
 {
 	if (is_array($_GET))
 	{
@@ -833,36 +832,36 @@ else
 				$sql_query = $remove_remarks($sql_query);
 				$sql_query = split_sql_file($sql_query, $delimiter);
 
-				for ($i = 0; $i < sizeof($sql_query); $i++)
-				{
-					if (trim($sql_query[$i]) != '')
-					{
-						if (!($result = $db->sql_query($sql_query[$i])))
-						{
-							$error = $db->sql_error();
-			
-							page_header($lang['Install'], '');
-							page_error($lang['Installer_Error'], $lang['Install_db_error'] . '<br />' . $error['message']);
-							page_footer();
-							exit;
-						}
-					}
-				}
-		
-				// Ok tables have been built, let's fill in the basic information
-				$sql_query = @fread(@fopen($dbms_basic, 'r'), @filesize($dbms_basic));
-				$sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
+      for ($i = 0; $i < sizeof($sql_query); $i++)
+      {
+        if (trim($sql_query[$i]) != '')
+        {
+          if (!($result = $db->sql_query($sql_query[$i])))
+          {
+            $error = $db->sql_error();
+    
+            page_header($lang['Install'], '');
+            page_error($lang['Installer_Error'], $lang['Install_db_error'] . '<br />' . $error['message']);
+            page_footer();
+            exit;
+          }
+        }
+      }
+  
+      // Ok tables have been built, let's fill in the basic information
+      $sql_query = @fread(@fopen($dbms_basic, 'r'), @filesize($dbms_basic));
+      $sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
 
 				$sql_query = $remove_remarks($sql_query);
 				$sql_query = split_sql_file($sql_query, $delimiter_basic);
 
-				for($i = 0; $i < sizeof($sql_query); $i++)
-				{
-					if (trim($sql_query[$i]) != '')
-					{
-						if (!($result = $db->sql_query($sql_query[$i])))
-						{
-							$error = $db->sql_error();
+      for($i = 0; $i < sizeof($sql_query); $i++)
+      {
+        if (trim($sql_query[$i]) != '')
+        {
+          if (!($result = $db->sql_query($sql_query[$i])))
+          {
+            $error = $db->sql_error();
 
 							page_header($lang['Install'], '');
 							page_error($lang['Installer_Error'], $lang['Install_db_error'] . '<br />' . $error['message']);

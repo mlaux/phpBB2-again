@@ -137,7 +137,7 @@ else
 if ( isset($_POST['mode']) || isset($_GET['mode']) )
 {
 	$mode = ( isset($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else
 {
@@ -605,6 +605,10 @@ else if ( $group_id )
 				{
 
 					$members = ( isset($_POST['approve']) || isset($_POST['deny']) ) ? $_POST['pending_members'] : $_POST['members'];
+					if ( !is_array($members) )
+					{
+						$members = array();
+					}
 
 					$sql_in = '';
 					for($i = 0; $i < count($members); $i++)

@@ -59,7 +59,7 @@ $mark_list = ( !empty($_POST['mark']) ) ? $_POST['mark'] : 0;
 if ( isset($_POST['folder']) || isset($_GET['folder']) )
 {
 	$folder = ( isset($_POST['folder']) ) ? $_POST['folder'] : $_GET['folder'];
-	$folder = htmlspecialchars($folder);
+	$folder = htmlspecialchars($folder, ENT_COMPAT, 'ISO-8859-1');
 
 	if ( $folder != 'inbox' && $folder != 'outbox' && $folder != 'sentbox' && $folder != 'savebox' )
 	{
@@ -94,7 +94,7 @@ if ( $cancel )
 if ( !empty($_POST['mode']) || !empty($_GET['mode']) )
 {
 	$mode = ( !empty($_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else
 {
@@ -1197,7 +1197,7 @@ else if ( $submit || $refresh || $mode != '' )
 			$error_msg .= ( ( !empty($error_msg) ) ? '<br />' : '' ) . $lang['No_to_user'];
 		}
 
-		$privmsg_subject = trim(htmlspecialchars($_POST['subject']));
+		$privmsg_subject = trim(htmlspecialchars($_POST['subject'], ENT_COMPAT, 'ISO-8859-1'));
 		if ( empty($privmsg_subject) )
 		{
 			$error = TRUE;
@@ -1382,9 +1382,9 @@ else if ( $submit || $refresh || $mode != '' )
 		// passed to the script, process it a little, do some checks
 		// where neccessary, etc.
 		//
-		$to_username = (isset($_POST['username']) ) ? trim(htmlspecialchars(stripslashes($_POST['username']))) : '';
+		$to_username = (isset($_POST['username']) ) ? trim(htmlspecialchars(stripslashes($_POST['username']), ENT_COMPAT, 'ISO-8859-1')) : '';
 
-		$privmsg_subject = ( isset($_POST['subject']) ) ? trim(htmlspecialchars(stripslashes($_POST['subject']))) : '';
+		$privmsg_subject = ( isset($_POST['subject']) ) ? trim(htmlspecialchars(stripslashes($_POST['subject']), ENT_COMPAT, 'ISO-8859-1')) : '';
 		$privmsg_message = ( isset($_POST['message']) ) ? trim($_POST['message']) : '';
 		// $privmsg_message = preg_replace('#<textarea>#si', '&lt;textarea&gt;', $privmsg_message);
 		if ( !$preview )
@@ -1660,7 +1660,7 @@ else if ( $submit || $refresh || $mode != '' )
 	//
 	if ($error)
 	{
-		$privmsg_message = htmlspecialchars($privmsg_message);
+		$privmsg_message = htmlspecialchars($privmsg_message, ENT_COMPAT, 'ISO-8859-1');
 		$template->set_filenames(array(
 			'reg_header' => 'error_body.tpl')
 		);

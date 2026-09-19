@@ -20,7 +20,7 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', 1);
 
 if( !empty($setmodules) )
 {
@@ -47,7 +47,7 @@ $html_entities_replace = array('&lt;', '&gt;');
 if( isset( $_POST['mode'] ) || isset( $_GET['mode'] ) )
 {
 	$mode = ( isset( $_POST['mode']) ) ? $_POST['mode'] : $_GET['mode'];
-	$mode = htmlspecialchars($mode);
+	$mode = htmlspecialchars($mode, ENT_COMPAT, 'ISO-8859-1');
 }
 else
 {
@@ -214,10 +214,10 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 		}
 
 		$username = ( !empty($_POST['username']) ) ? phpbb_clean_username($_POST['username']) : '';
-		$email = ( !empty($_POST['email']) ) ? trim(strip_tags(htmlspecialchars( $_POST['email'] ) )) : '';
+		$email = ( !empty($_POST['email']) ) ? trim(strip_tags(htmlspecialchars( $_POST['email'] , ENT_COMPAT, 'ISO-8859-1') )) : '';
 
-		$password = ( !empty($_POST['password']) ) ? trim(strip_tags(htmlspecialchars( $_POST['password'] ) )) : '';
-		$password_confirm = ( !empty($_POST['password_confirm']) ) ? trim(strip_tags(htmlspecialchars( $_POST['password_confirm'] ) )) : '';
+		$password = ( !empty($_POST['password']) ) ? trim(strip_tags(htmlspecialchars( $_POST['password'] , ENT_COMPAT, 'ISO-8859-1') )) : '';
+		$password_confirm = ( !empty($_POST['password_confirm']) ) ? trim(strip_tags(htmlspecialchars( $_POST['password_confirm'] , ENT_COMPAT, 'ISO-8859-1') )) : '';
 
 		$icq = ( !empty($_POST['icq']) ) ? trim(strip_tags( $_POST['icq'] ) ) : '';
 		$aim = ( !empty($_POST['aim']) ) ? trim(strip_tags( $_POST['aim'] ) ) : '';
@@ -249,7 +249,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 		$user_dateformat = ( $_POST['dateformat'] ) ? trim( $_POST['dateformat'] ) : $board_config['default_dateformat'];
 
 		$user_avatar_local = ( isset( $_POST['avatarselect'] ) && !empty($_POST['submitavatar'] ) && $board_config['allow_avatar_local'] ) ? $_POST['avatarselect'] : ( ( isset( $_POST['avatarlocal'] )  ) ? $_POST['avatarlocal'] : '' );
-		$user_avatar_category = ( isset($_POST['avatarcatname']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars($_POST['avatarcatname']) : '' ;
+		$user_avatar_category = ( isset($_POST['avatarcatname']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars($_POST['avatarcatname'], ENT_COMPAT, 'ISO-8859-1') : '' ;
 
 		$user_avatar_remoteurl = ( !empty($_POST['avatarremoteurl']) ) ? trim( $_POST['avatarremoteurl'] ) : '';
 		$user_avatar_url = ( !empty($_POST['avatarurl']) ) ? trim( $_POST['avatarurl'] ) : '';
@@ -274,18 +274,18 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 			$password_confirm = '';
 
 			$icq = stripslashes($icq);
-			$aim = htmlspecialchars(stripslashes($aim));
-			$msn = htmlspecialchars(stripslashes($msn));
-			$yim = htmlspecialchars(stripslashes($yim));
+			$aim = htmlspecialchars(stripslashes($aim), ENT_COMPAT, 'ISO-8859-1');
+			$msn = htmlspecialchars(stripslashes($msn), ENT_COMPAT, 'ISO-8859-1');
+			$yim = htmlspecialchars(stripslashes($yim), ENT_COMPAT, 'ISO-8859-1');
 
-			$website = htmlspecialchars(stripslashes($website));
-			$location = htmlspecialchars(stripslashes($location));
-			$occupation = htmlspecialchars(stripslashes($occupation));
-			$interests = htmlspecialchars(stripslashes($interests));
-			$signature = htmlspecialchars(stripslashes($signature));
+			$website = htmlspecialchars(stripslashes($website), ENT_COMPAT, 'ISO-8859-1');
+			$location = htmlspecialchars(stripslashes($location), ENT_COMPAT, 'ISO-8859-1');
+			$occupation = htmlspecialchars(stripslashes($occupation), ENT_COMPAT, 'ISO-8859-1');
+			$interests = htmlspecialchars(stripslashes($interests), ENT_COMPAT, 'ISO-8859-1');
+			$signature = htmlspecialchars(stripslashes($signature), ENT_COMPAT, 'ISO-8859-1');
 
 			$user_lang = stripslashes($user_lang);
-			$user_dateformat = htmlspecialchars(stripslashes($user_dateformat));
+			$user_dateformat = htmlspecialchars(stripslashes($user_dateformat), ENT_COMPAT, 'ISO-8859-1');
 
 			if ( !isset($_POST['cancelavatar'])) 
 			{
@@ -708,24 +708,24 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 
 			$template->assign_var_from_handle('ERROR_BOX', 'reg_header');
 
-			$username = htmlspecialchars(stripslashes($username));
+			$username = htmlspecialchars(stripslashes($username), ENT_COMPAT, 'ISO-8859-1');
 			$email = stripslashes($email);
 			$password = '';
 			$password_confirm = '';
 
 			$icq = stripslashes($icq);
-			$aim = htmlspecialchars(str_replace('+', ' ', stripslashes($aim)));
-			$msn = htmlspecialchars(stripslashes($msn));
-			$yim = htmlspecialchars(stripslashes($yim));
+			$aim = htmlspecialchars(str_replace('+', ' ', stripslashes($aim)), ENT_COMPAT, 'ISO-8859-1');
+			$msn = htmlspecialchars(stripslashes($msn), ENT_COMPAT, 'ISO-8859-1');
+			$yim = htmlspecialchars(stripslashes($yim), ENT_COMPAT, 'ISO-8859-1');
 
-			$website = htmlspecialchars(stripslashes($website));
-			$location = htmlspecialchars(stripslashes($location));
-			$occupation = htmlspecialchars(stripslashes($occupation));
-			$interests = htmlspecialchars(stripslashes($interests));
-			$signature = htmlspecialchars(stripslashes($signature));
+			$website = htmlspecialchars(stripslashes($website), ENT_COMPAT, 'ISO-8859-1');
+			$location = htmlspecialchars(stripslashes($location), ENT_COMPAT, 'ISO-8859-1');
+			$occupation = htmlspecialchars(stripslashes($occupation), ENT_COMPAT, 'ISO-8859-1');
+			$interests = htmlspecialchars(stripslashes($interests), ENT_COMPAT, 'ISO-8859-1');
+			$signature = htmlspecialchars(stripslashes($signature), ENT_COMPAT, 'ISO-8859-1');
 
 			$user_lang = stripslashes($user_lang);
-			$user_dateformat = htmlspecialchars(stripslashes($user_dateformat));
+			$user_dateformat = htmlspecialchars(stripslashes($user_dateformat), ENT_COMPAT, 'ISO-8859-1');
 		}
 	}
 	else if( !isset( $_POST['submit'] ) && $mode != 'save' && !isset( $_POST['avatargallery'] ) && !isset( $_POST['submitavatar'] ) && !isset( $_POST['cancelavatar'] ) )
@@ -758,14 +758,14 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 		$password_confirm = '';
 
 		$icq = $this_userdata['user_icq'];
-		$aim = htmlspecialchars(str_replace('+', ' ', $this_userdata['user_aim'] ));
-		$msn = htmlspecialchars($this_userdata['user_msnm']);
-		$yim = htmlspecialchars($this_userdata['user_yim']);
+		$aim = htmlspecialchars(str_replace('+', ' ', $this_userdata['user_aim'] ), ENT_COMPAT, 'ISO-8859-1');
+		$msn = htmlspecialchars($this_userdata['user_msnm'], ENT_COMPAT, 'ISO-8859-1');
+		$yim = htmlspecialchars($this_userdata['user_yim'], ENT_COMPAT, 'ISO-8859-1');
 
-		$website = htmlspecialchars($this_userdata['user_website']);
-		$location = htmlspecialchars($this_userdata['user_from']);
-		$occupation = htmlspecialchars($this_userdata['user_occ']);
-		$interests = htmlspecialchars($this_userdata['user_interests']);
+		$website = htmlspecialchars($this_userdata['user_website'], ENT_COMPAT, 'ISO-8859-1');
+		$location = htmlspecialchars($this_userdata['user_from'], ENT_COMPAT, 'ISO-8859-1');
+		$occupation = htmlspecialchars($this_userdata['user_occ'], ENT_COMPAT, 'ISO-8859-1');
+		$interests = htmlspecialchars($this_userdata['user_interests'], ENT_COMPAT, 'ISO-8859-1');
 
 		$signature = ($this_userdata['user_sig_bbcode_uid'] != '') ? preg_replace('#:' . $this_userdata['user_sig_bbcode_uid'] . '#si', '', $this_userdata['user_sig']) : $this_userdata['user_sig'];
 		$signature = preg_replace($html_entities_match, $html_entities_replace, $signature);
@@ -785,7 +785,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 		$user_style = $this_userdata['user_style'];
 		$user_lang = $this_userdata['user_lang'];
 		$user_timezone = $this_userdata['user_timezone'];
-		$user_dateformat = htmlspecialchars($this_userdata['user_dateformat']);
+		$user_dateformat = htmlspecialchars($this_userdata['user_dateformat'], ENT_COMPAT, 'ISO-8859-1');
 		
 		$user_status = $this_userdata['user_active'];
 		$user_allowavatar = $this_userdata['user_allowavatar'];
@@ -841,7 +841,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 
 			if( isset($_POST['avatarcategory']) )
 			{
-				$category = htmlspecialchars($_POST['avatarcategory']);
+				$category = htmlspecialchars($_POST['avatarcategory'], ENT_COMPAT, 'ISO-8859-1');
 			}
 			else
 			{

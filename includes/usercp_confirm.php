@@ -38,7 +38,7 @@ if (empty($_GET['id']))
 	exit;
 }
 
-$confirm_id = htmlspecialchars($_GET['id']);
+$confirm_id = htmlspecialchars($_GET['id'], ENT_COMPAT, 'ISO-8859-1');
 
 // Define available charset
 $chars = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',  'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',  'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9');
@@ -155,8 +155,8 @@ exit;
 function randomise($scanline, $width)
 {
 	$new_line = '';
-	$start = floor($width/2);
-	$end = strlen($scanline) - ceil($width/2);
+	$start = (int) floor($width/2);
+	$end = strlen($scanline) - (int) ceil($width/2);
 
 	for ($i = $start; $i < $end; $i++)
 	{

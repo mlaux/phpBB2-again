@@ -303,7 +303,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 	return $avatar_sql;
 }
 
-function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current_email, &$coppa, &$username, &$email, &$new_password, &$cur_password, &$password_confirm, &$icq, &$aim, &$msn, &$yim, &$website, &$location, &$occupation, &$interests, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$allowhtml, &$allowbbcode, &$allowsmilies, &$hideonline, &$style, &$language, &$timezone, &$dateformat, &$session_id)
+function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current_email, &$coppa, &$username, &$new_password, &$cur_password, &$password_confirm, &$icq, &$aim, &$msn, &$yim, &$website, &$location, &$occupation, &$interests, &$signature, &$viewemail, &$notifypm, &$popup_pm, &$notifyreply, &$attachsig, &$allowhtml, &$allowbbcode, &$allowsmilies, &$hideonline, &$style, &$language, &$timezone, &$dateformat, &$session_id)
 {
 	global $board_config, $db, $template, $lang, $images, $theme;
 	global $phpbb_root_path, $phpEx;
@@ -342,7 +342,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 	@ksort($avatar_images);
 	@reset($avatar_images);
 
-	if( empty($category) )
+	if( empty($category) || !isset($avatar_images[$category]) )
 	{
 		$category = array_key_first($avatar_images);
 	}

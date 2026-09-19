@@ -69,6 +69,11 @@ else
 
 $search_id = ( isset($_GET['search_id']) ) ? $_GET['search_id'] : '';
 
+// Only the keyword branch fills these, but the highlight code uses them for every search type
+$split_search = array();
+$synonym_array = array();
+$stopword_array = array();
+
 $show_results = ( isset($_POST['show_results']) ) ? $_POST['show_results'] : 'posts';
 $show_results = ($show_results == 'topics') ? 'topics' : 'posts';
 
@@ -275,6 +280,14 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 		{
 			$stopword_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_stopwords.txt'); 
 			$synonym_array = @file($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/search_synonyms.txt'); 
+			if (!is_array($stopword_array))
+			{
+				$stopword_array = array();
+			}
+			if (!is_array($synonym_array))
+			{
+				$synonym_array = array();
+			}
 
 			$split_search = array();
 			$stripped_keywords = stripslashes($search_keywords);

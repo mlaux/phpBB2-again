@@ -32,7 +32,7 @@ if ( isset($_POST['submit']) )
 	$username = ( !empty($_POST['username']) ) ? phpbb_clean_username($_POST['username']) : '';
 	$email = ( !empty($_POST['email']) ) ? trim(strip_tags(htmlspecialchars($_POST['email'], ENT_COMPAT, 'ISO-8859-1'))) : '';
 
-	$sql = "SELECT user_id, username, user_email, user_active, user_lang 
+	$sql = "SELECT user_id, username, user_email, user_active, user_lang, user_actkey, user_passwd_tries, user_last_passwd_try 
 		FROM " . USERS_TABLE . " 
 		WHERE user_email = '" . str_replace("\'", "''", $email) . "' 
 			AND username = '" . str_replace("\'", "''", $username) . "'";
@@ -45,17 +45,34 @@ if ( isset($_POST['submit']) )
 				message_die(GENERAL_MESSAGE, $lang['No_send_account_inactive']);
 			}
 
+			$reset_window = $board_config['login_reset_time'] * 60;
+			$passwd_tries = $row['user_passwd_tries'];
+
+			if ( $row['user_last_passwd_try'] && $reset_window && $row['user_last_passwd_try'] < (time() - $reset_window) )
+			{
+				$passwd_tries = 0;
+			}
+			else if ( $board_config['max_login_attempts'] && $passwd_tries >= $board_config['max_login_attempts'] )
+			{
+				message_die(GENERAL_MESSAGE, sprintf($lang['Passwd_attempts_exceeded'], $board_config['max_login_attempts'], $board_config['login_reset_time']));
+			}
+			else if ( trim($row['user_actkey']) != '' && $row['user_last_passwd_try'] )
+			{
+				message_die(GENERAL_MESSAGE, $lang['Passwd_reset_pending']);
+			}
+
 			$username = $row['username'];
 			$user_id = $row['user_id'];
 
 			$user_actkey = gen_rand_string(true);
+			// Floor was 6 hex chars (24 bits), which is brute forceable.
 			$key_len = 54 - strlen($server_url);
-			$key_len = ($key_len > 6) ? $key_len : 6;
+			$key_len = ($key_len > 16) ? $key_len : 16;
 			$user_actkey = substr($user_actkey, 0, $key_len);
 			$user_password = gen_rand_string(false);
 			
 			$sql = "UPDATE " . USERS_TABLE . " 
-				SET user_newpasswd = '" . phpbb_hash_password($user_password) . "', user_actkey = '$user_actkey'  
+				SET user_newpasswd = '" . phpbb_hash_password($user_password) . "', user_actkey = '$user_actkey', user_passwd_tries = " . ($passwd_tries + 1) . ", user_last_passwd_try = " . time() . "  
 				WHERE user_id = " . $row['user_id'];
 			if ( !$db->sql_query($sql) )
 			{

@@ -544,6 +544,8 @@ $lang['File_no_data'] = 'The file at the URL you gave contains no data';
 $lang['No_connection_URL'] = 'A connection could not be made to the URL you gave';
 $lang['Incomplete_URL'] = 'The URL you entered is incomplete';
 $lang['Wrong_remote_avatar_format'] = 'The URL of the remote avatar is not valid';
+$lang['Passwd_attempts_exceeded'] = 'The maximum number of %s password reset requests for this account has been exceeded. Please try again in %s minutes.';
+$lang['Passwd_reset_pending'] = 'A password reset has already been requested for this account. Please check your email, or wait for the existing request to expire before requesting another.';
 $lang['No_send_account_inactive'] = 'Sorry, but your password cannot be retrieved because your account is currently inactive. Please contact the forum administrator for more information.';
 
 $lang['Always_smile'] = 'Always enable Smilies';

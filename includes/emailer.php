@@ -32,7 +32,7 @@ class emailer
 
 	var $tpl_msg = array();
 
-	function emailer($use_smtp)
+	function __construct($use_smtp)
 	{
 		$this->reset();
 		$this->use_smtp = $use_smtp;
@@ -143,7 +143,7 @@ class emailer
 
 		// Set vars
 		reset ($this->vars);
-		while (list($key, $val) = each($this->vars)) 
+		foreach ($this->vars as $key => $val) 
 		{
 			$$key = $val;
 		}
@@ -152,7 +152,7 @@ class emailer
 
 		// Clear vars
 		reset ($this->vars);
-		while (list($key, $val) = each($this->vars)) 
+		foreach ($this->vars as $key => $val) 
 		{
 			unset($$key);
 		}
@@ -269,7 +269,7 @@ class emailer
 	//
 	// Attach files via MIME.
 	//
-	function attachFile($filename, $mimetype = "application/octet-stream", $szFromAddress, $szFilenameToDisplay)
+	function attachFile($filename, $mimetype, $szFromAddress, $szFilenameToDisplay)
 	{
 		global $lang;
 		$mime_boundary = "--==================_846811060==_";

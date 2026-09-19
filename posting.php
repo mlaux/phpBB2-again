@@ -31,7 +31,7 @@ include($phpbb_root_path . 'includes/functions_post.'.$phpEx);
 // Check and set various parameters
 //
 $params = array('submit' => 'post', 'preview' => 'preview', 'delete' => 'delete', 'poll_delete' => 'poll_delete', 'poll_add' => 'add_poll_option', 'poll_edit' => 'edit_poll_option', 'mode' => 'mode');
-while( list($var, $param) = @each($params) )
+foreach ($params as $var => $param)
 {
 	if ( !empty($_POST[$param]) || !empty($_GET[$param]) )
 	{
@@ -47,7 +47,7 @@ $confirm = isset($_POST['confirm']) ? true : false;
 $sid = (isset($_POST['sid'])) ? $_POST['sid'] : 0;
 
 $params = array('forum_id' => POST_FORUM_URL, 'topic_id' => POST_TOPIC_URL, 'post_id' => POST_POST_URL);
-while( list($var, $param) = @each($params) )
+foreach ($params as $var => $param)
 {
 	if ( !empty($_POST[$param]) || !empty($_GET[$param]) )
 	{
@@ -631,7 +631,7 @@ if( $refresh || isset($_POST['del_poll_option']) || $error_msg != '' )
 	$poll_options = array();
 	if ( !empty($_POST['poll_option_text']) )
 	{
-		while( list($option_id, $option_text) = @each($_POST['poll_option_text']) )
+		foreach ($_POST['poll_option_text'] as $option_id => $option_text)
 		{
 			if( isset($_POST['del_poll_option'][$option_id]) )
 			{
@@ -1100,7 +1100,7 @@ if( ( $mode == 'newtopic' || ( $mode == 'editpost' && $post_data['edit_poll']) )
 
 	if( !empty($poll_options) )
 	{
-		while( list($option_id, $option_text) = each($poll_options) )
+		foreach ($poll_options as $option_id => $option_text)
 		{
 			$template->assign_block_vars('poll_option_rows', array(
 				'POLL_OPTION' => str_replace('"', '&quot;', $option_text), 

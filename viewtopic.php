@@ -485,7 +485,7 @@ $highlight_match = $highlight = '';
 if (isset($_GET['highlight']))
 {
 	// Split words and phrases
-	$words = explode(' ', trim(htmlspecialchars($_GET['highlight'])));
+	$words = explode(' ', trim(htmlspecialchars($_GET['highlight'], ENT_COMPAT, 'ISO-8859-1')));
 
 	for($i = 0; $i < sizeof($words); $i++)
 	{
@@ -1117,10 +1117,10 @@ for($i = 0; $i < $total_posts; $i++)
 
 		if ($user_sig != '')
 		{
-			$user_sig = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $user_sig . '<'), 1, -1));
+			$user_sig = str_replace('\"', '"', substr(@preg_replace_callback('#(\>(((?>([^><]+|(?R)))*)\<))#s', function ($m) use ($orig_word, $replacement_word) { return @preg_replace($orig_word, $replacement_word, $m[0]); }, '>' . $user_sig . '<'), 1, -1));
 		}
 
-		$message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
+		$message = str_replace('\"', '"', substr(@preg_replace_callback('#(\>(((?>([^><]+|(?R)))*)\<))#s', function ($m) use ($orig_word, $replacement_word) { return @preg_replace($orig_word, $replacement_word, $m[0]); }, '>' . $message . '<'), 1, -1));
 	}
 
 	//

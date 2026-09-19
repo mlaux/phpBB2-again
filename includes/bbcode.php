@@ -229,7 +229,7 @@ function bbencode_second_pass($text, $uid)
 } // bbencode_second_pass()
 
 // Need to initialize the random numbers only ONCE
-mt_srand( (double) microtime() * 1000000);
+mt_srand( (float) microtime() * 1000000);
 
 function make_bbcode_uid()
 {
@@ -283,7 +283,7 @@ function bbencode_first_pass($text, $uid)
 	$text = preg_replace("#\[i\](.*?)\[/i\]#si", "[i:$uid]\\1[/i:$uid]", $text);
 
 	// [img]image_url_here[/img] code..
-	$text = preg_replace("#\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
+	$text = preg_replace_callback("#\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#si", function ($m) use ($uid) { return '[img:' . $uid . ']' . $m[1] . str_replace(' ', '%20', $m[3]) . '[/img:' . $uid . ']'; }, $text);
 
 	// Remove our padding from the string..
 	return substr($text, 1);;
@@ -719,7 +719,7 @@ function bbcode_array_pop(&$stack)
    $arrSize = count($stack);
    $x = 1;
 
-   while(list($key, $val) = each($stack))
+   foreach ($stack as $key => $val)
    {
       if($x < count($stack))
       {

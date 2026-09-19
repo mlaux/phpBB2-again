@@ -201,7 +201,7 @@ function guess_lang()
 		for ($i = 0; $i < sizeof($accept_lang_ary); $i++)
 		{
 			@reset($match_lang);
-			while (list($lang, $match) = each($match_lang))
+			foreach ($match_lang as $lang => $match)
 			{
 				if (preg_match('#' . $match . '#i', trim($accept_lang_ary[$i])))
 				{
@@ -247,11 +247,11 @@ if (!get_magic_quotes_gpc())
 {
 	if (is_array($_GET))
 	{
-		while (list($k, $v) = each($_GET))
+		foreach ($_GET as $k => $v)
 		{
 			if (is_array($_GET[$k]))
 			{
-				while (list($k2, $v2) = each($_GET[$k]))
+				foreach ($_GET[$k] as $k2 => $v2)
 				{
 					$_GET[$k][$k2] = addslashes($v2);
 				}
@@ -267,11 +267,11 @@ if (!get_magic_quotes_gpc())
 
 	if (is_array($_POST))
 	{
-		while (list($k, $v) = each($_POST))
+		foreach ($_POST as $k => $v)
 		{
 			if (is_array($_POST[$k]))
 			{
-				while (list($k2, $v2) = each($_POST[$k]))
+				foreach ($_POST[$k] as $k2 => $v2)
 				{
 					$_POST[$k][$k2] = addslashes($v2);
 				}
@@ -287,11 +287,11 @@ if (!get_magic_quotes_gpc())
 
 	if (is_array($_COOKIE))
 	{
-		while (list($k, $v) = each($_COOKIE))
+		foreach ($_COOKIE as $k => $v)
 		{
 			if (is_array($_COOKIE[$k]))
 			{
-				while (list($k2, $v2) = each($_COOKIE[$k]))
+				foreach ($_COOKIE[$k] as $k2 => $v2)
 				{
 					$_COOKIE[$k][$k2] = addslashes($v2);
 				}
@@ -650,7 +650,7 @@ else if ((empty($install_step) || $admin_pass1 != $admin_pass2 || empty($admin_p
 	@reset($lang_options);
 
 	$lang_select = '<select name="lang" onchange="this.form.submit()">';
-	while (list($displayname, $filename) = @each($lang_options))
+	foreach ($lang_options as $displayname => $filename)
 	{
 		$selected = ($language == $filename) ? ' selected="selected"' : '';
 		$lang_select .= '<option value="' . $filename . '"' . $selected . '>' . ucwords($displayname) . '</option>';
@@ -658,7 +658,7 @@ else if ((empty($install_step) || $admin_pass1 != $admin_pass2 || empty($admin_p
 	$lang_select .= '</select>';
 
 	$dbms_select = '<select name="dbms" onchange="if(this.form.upgrade.options[this.form.upgrade.selectedIndex].value == 1){ this.selectedIndex = 0;}">';
-	while (list($dbms_name, $details) = @each($available_dbms))
+	foreach ($available_dbms as $dbms_name => $details)
 	{
 		$selected = ($dbms_name == $dbms) ? 'selected="selected"' : '';
 		$dbms_select .= '<option value="' . $dbms_name . '">' . $details['LABEL'] . '</option>';
@@ -902,7 +902,7 @@ else
 				'server_name'	=> $server_name,
 			);
 
-			while (list($config_name, $config_value) = each($update_config))
+			foreach ($update_config as $config_name => $config_value)
 			{
 				$sql = "UPDATE " . $table_prefix . "config 
 					SET config_value = '$config_value' 

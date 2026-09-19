@@ -55,7 +55,7 @@ class Template {
 	 * Constructor. Simply sets the root dir.
 	 *
 	 */
-	function Template($root = '.')
+	function __construct($root = '.')
 	{
 		global $db;
 
@@ -103,7 +103,7 @@ class Template {
 
 		$template_names = '';
 		@reset($filename_array);
-		while ( list($handle, $filename) = @each($filename_array) )
+		foreach ($filename_array as $handle => $filename)
 		{
 			$this->files[$handle] = $this->make_filename($filename);
 			$template_names .= ( $template_names != '' ) ? ", '" . addslashes($this->files[$handle]) . "'" : "'" . addslashes($this->files[$handle]) . "'";
@@ -258,7 +258,7 @@ class Template {
 	function assign_vars($vararray)
 	{
 		reset ($vararray);
-		while (list($key, $val) = each($vararray))
+		foreach ($vararray as $key => $val)
 		{
 			$this->_tpldata['.'][0][$key] = $val;
 		}

@@ -84,7 +84,7 @@ switch( $mode )
 			{
 				if( $template_name[$i]['style_name'] == $style_name )
 				{
-					while(list($key, $val) = each($template_name[$i]))
+					foreach ($template_name[$i] as $key => $val)
 					{
 						$db_fields[] = $key;
 						$db_values[] = str_replace("\'", "''" , $val);
@@ -287,7 +287,7 @@ switch( $mode )
 				$sql = "UPDATE " . THEMES_TABLE . " SET ";
 				$count = 0;
 
-				while(list($key, $val) = each($updated))
+				foreach ($updated as $key => $val)
 				{
 					if($count != 0)
 					{
@@ -326,7 +326,7 @@ switch( $mode )
 					$sql = "UPDATE " . THEMES_NAME_TABLE . " 
 						SET ";
 					$count = 0;
-					while(list($key, $val) = each($updated_name))
+					foreach ($updated_name as $key => $val)
 					{
 						if($count != 0)
 						{
@@ -346,7 +346,7 @@ switch( $mode )
 					// Nope, no names entry so we create a new one.
 					//
 					$sql = "INSERT INTO " . THEMES_NAME_TABLE . " (themes_id, ";
-					while(list($key, $val) = each($updated_name))
+					foreach ($updated_name as $key => $val)
 					{
 						$fields[] = $key;
 						$vals[] = str_replace("\'", "''", $val);
@@ -401,7 +401,7 @@ switch( $mode )
 					message_die(GENERAL_ERROR, $lang['Style_exists'], $lang['Error']);
 				}				
 				
-				while(list($key, $val) = each($updated))
+				foreach ($updated as $key => $val)
 				{
 					$field_names[] = $key;
 
@@ -448,7 +448,7 @@ switch( $mode )
 				// Insert names data
 				//
 				$sql = "INSERT INTO " . THEMES_NAME_TABLE . " (themes_id, ";
-				while(list($key, $val) = each($updated_name))
+				foreach ($updated_name as $key => $val)
 				{
 					$fields[] = $key;
 					$vals[] = $val;
@@ -509,7 +509,7 @@ switch( $mode )
 				
 				if ( $selected_values = $db->sql_fetchrow($result) )
 				{
-					while(list($key, $val) = @each($selected_values))
+					foreach ($selected_values as $key => $val)
 					{
 						$selected[$key] = $val;
 					}
@@ -528,7 +528,7 @@ switch( $mode )
 				
 				if ( $selected_names = $db->sql_fetchrow($result) )
 				{
-					while(list($key, $val) = @each($selected_names))
+					foreach ($selected_names as $key => $val)
 					{
 						$selected[$key] = $val;
 					}
@@ -701,7 +701,7 @@ switch( $mode )
 		}
 		break;
 
-	case "export";
+	case "export":
 		if($_POST['export_template'])
 		{
 			$template_name = $_POST['export_template'];
@@ -726,7 +726,7 @@ switch( $mode )
 
 			for($i = 0; $i < count($theme_rowset); $i++)
 			{
-				while(list($key, $val) = each($theme_rowset[$i]))
+				foreach ($theme_rowset[$i] as $key => $val)
 				{
 					if(!intval($key) && $key != "0" && $key != "themes_id")
 					{

@@ -845,12 +845,20 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset(
 			}
 			else
 			{
-				list($category, ) = each($avatar_images);
+				$category = array_key_first($avatar_images);
+			}
+			if( !isset($avatar_images[$category]) )
+			{
+				$category = array_key_first($avatar_images);
+			}
+			if( !isset($avatar_images[$category]) )
+			{
+				$avatar_images[$category] = array();
 			}
 			@reset($avatar_images);
 
 			$s_categories = "";
-			while( list($key) = each($avatar_images) )
+			foreach ($avatar_images as $key => $_unused)
 			{
 				$selected = ( $key == $category ) ? "selected=\"selected\"" : "";
 				if( count($avatar_images[$key]) )

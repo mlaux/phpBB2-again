@@ -78,7 +78,7 @@ function clean_words($mode, &$entry, &$stopword_list, &$synonym_list)
 	{
 		for ($j = 0; $j < count($synonym_list); $j++)
 		{
-			list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_list[$j])));
+			list($replace_synonym, $match_synonym) = explode(' ', trim(strtolower($synonym_list[$j])));
 			if ( $mode == 'post' || ( $match_synonym != 'not' && $match_synonym != 'and' && $match_synonym != 'or' ) )
 			{
 				$entry =  str_replace(' ' . trim($match_synonym) . ' ', ' ' . trim($replace_synonym) . ' ', $entry);
@@ -117,7 +117,7 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 
 	$word = array();
 	$word_insert_sql = array();
-	while ( list($word_in, $search_matches) = @each($search_raw_words) )
+	foreach ($search_raw_words as $word_in => $search_matches)
 	{
 		$word_insert_sql[$word_in] = '';
 		if ( !empty($search_matches) )
@@ -236,7 +236,7 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 		}
 	}
 
-	while( list($word_in, $match_sql) = @each($word_insert_sql) )
+	foreach ($word_insert_sql as $word_in => $match_sql)
 	{
 		$title_match = ( $word_in == 'title' ) ? 1 : 0;
 

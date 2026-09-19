@@ -278,7 +278,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 
 			$split_search = array();
 			$stripped_keywords = stripslashes($search_keywords);
-			$split_search = ( !strstr($multibyte_charset, $lang['ENCODING']) ) ?  split_words(clean_words('search', $stripped_keywords, $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);	
+			$split_search = ( !strstr($multibyte_charset, $lang['ENCODING']) ) ?  split_words(clean_words('search', $stripped_keywords, $stopword_array, $synonym_array), 'search') : explode(' ', $search_keywords);	
 			unset($stripped_keywords);
 
 			$search_msg_only = ( !$search_fields ) ? "AND m.title_match = 0" : ( ( strstr($multibyte_charset, $lang['ENCODING']) ) ? '' : '' );
@@ -363,7 +363,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 						if ( $current_match_type == 'and' && $word_count )
 						{
 							@reset($result_list);
-							while( list($post_id, $match_count) = @each($result_list) )
+							foreach ($result_list as $post_id => $match_count)
 							{
 								if ( !$row[$post_id] )
 								{
@@ -381,7 +381,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 			@reset($result_list);
 
 			$search_ids = array();
-			while( list($post_id, $matches) = each($result_list) )
+			foreach ($result_list as $post_id => $matches)
 			{
 				if ( $matches )
 				{
@@ -421,7 +421,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 			}
 
 			$ignore_forum_sql = '';
-			while( list($key, $value) = each($is_auth_ary) )
+			foreach ($is_auth_ary as $key => $value)
 			{
 				if ( !$value['auth_read'] )
 				{
@@ -686,13 +686,13 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 
 		for($i = 0; $i < count($store_vars); $i++)
 		{
-			$store_search_data[$store_vars[$i]] = $$store_vars[$i];
+			$store_search_data[$store_vars[$i]] = ${$store_vars[$i]};
 		}
 
 		$result_array = serialize($store_search_data);
 		unset($store_search_data);
 
-		mt_srand ((double) microtime() * 1000000);
+		mt_srand ((float) microtime() * 1000000);
 		$search_id = mt_rand();
 
 		$sql = "UPDATE " . SEARCH_TABLE . " 
@@ -727,7 +727,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 				$search_data = unserialize($row['search_array']);
 				for($i = 0; $i < count($store_vars); $i++)
 				{
-					$$store_vars[$i] = $search_data[$store_vars[$i]];
+					${$store_vars[$i]} = $search_data[$store_vars[$i]];
 				}
 			}
 		}
@@ -843,7 +843,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 
 				for ($k = 0; $k < count($synonym_array); $k++)
 				{ 
-					list($replace_synonym, $match_synonym) = split(' ', trim(strtolower($synonym_array[$k]))); 
+					list($replace_synonym, $match_synonym) = explode(' ', trim(strtolower($synonym_array[$k]))); 
 
 					if ( $replace_synonym == $split_word )
 					{
@@ -1338,7 +1338,7 @@ if ( $s_forums != '' )
 	// Category to search
 	//
 	$s_categories = '<option value="-1">' . $lang['All_available'] . '</option>';
-	while( list($cat_id, $cat_title) = @each($list_cat))
+	foreach ($list_cat as $cat_id => $cat_title)
 	{
 		$s_categories .= '<option value="' . $cat_id . '">' . $cat_title . '</option>';
 	}

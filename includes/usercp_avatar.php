@@ -344,12 +344,16 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 
 	if( empty($category) )
 	{
-		list($category, ) = each($avatar_images);
+		$category = array_key_first($avatar_images);
+	}
+	if( !isset($avatar_images[$category]) )
+	{
+		$avatar_images[$category] = array();
 	}
 	@reset($avatar_images);
 
 	$s_categories = '<select name="avatarcategory">';
-	while( list($key) = each($avatar_images) )
+	foreach ($avatar_images as $key => $_unused)
 	{
 		$selected = ( $key == $category ) ? ' selected="selected"' : '';
 		if( count($avatar_images[$key]) )
@@ -385,7 +389,7 @@ function display_avatar_gallery($mode, &$category, &$user_id, &$email, &$current
 
 	for($i = 0; $i < count($params); $i++)
 	{
-		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', $$params[$i]) . '" />';
+		$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . str_replace('"', '&quot;', ${$params[$i]}) . '" />';
 	}
 	
 	$template->assign_vars(array(

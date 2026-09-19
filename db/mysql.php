@@ -6,7 +6,7 @@
  *   copyright            : (C) 2001 The phpBB Group
  *   email                : support@phpbb.com
  *
- *   $Id: mysql.php 5211 2005-09-18 16:17:21Z acydburn $
+ *   Ported to mysqli for PHP 8.
  *
  ***************************************************************************/
 
@@ -26,305 +26,261 @@ define("SQL_LAYER","mysql");
 
 class sql_db
 {
-
 	var $db_connect_id;
 	var $query_result;
 	var $row = array();
 	var $rowset = array();
 	var $num_queries = 0;
+	var $persistency;
+	var $user;
+	var $password;
+	var $server;
+	var $dbname;
 
-	//
-	// Constructor
-	//
-	function sql_db($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
+	function __construct($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
 	{
-
 		$this->persistency = $persistency;
 		$this->user = $sqluser;
 		$this->password = $sqlpassword;
 		$this->server = $sqlserver;
 		$this->dbname = $database;
 
-		if($this->persistency)
+		mysqli_report(MYSQLI_REPORT_OFF);
+
+		$port = null;
+		if (strpos($sqlserver, ':') !== false)
 		{
-			$this->db_connect_id = @mysql_pconnect($this->server, $this->user, $this->password);
+			list($sqlserver, $port) = explode(':', $sqlserver, 2);
+			$port = (int) $port;
 		}
-		else
+		if ($persistency)
 		{
-			$this->db_connect_id = @mysql_connect($this->server, $this->user, $this->password);
+			$sqlserver = 'p:' . $sqlserver;
 		}
-		if($this->db_connect_id)
+
+		$this->db_connect_id = @mysqli_connect($sqlserver, $sqluser, $sqlpassword, $database, $port);
+		if (!$this->db_connect_id)
 		{
-			if($database != "")
-			{
-				$this->dbname = $database;
-				$dbselect = @mysql_select_db($this->dbname);
-				if(!$dbselect)
-				{
-					@mysql_close($this->db_connect_id);
-					$this->db_connect_id = $dbselect;
-				}
-			}
-			return $this->db_connect_id;
-		}
-		else
-		{
-			return false;
+			$this->db_connect_id = false;
+			return;
 		}
 	}
 
-	//
-	// Other base methods
-	//
 	function sql_close()
 	{
-		if($this->db_connect_id)
-		{
-			if($this->query_result)
-			{
-				@mysql_free_result($this->query_result);
-			}
-			$result = @mysql_close($this->db_connect_id);
-			return $result;
-		}
-		else
+		if (!$this->db_connect_id)
 		{
 			return false;
 		}
+		if ($this->query_result instanceof mysqli_result)
+		{
+			@mysqli_free_result($this->query_result);
+		}
+		return @mysqli_close($this->db_connect_id);
 	}
 
-	//
-	// Base query method
-	//
 	function sql_query($query = "", $transaction = FALSE)
 	{
-		// Remove any pre-existing queries
 		unset($this->query_result);
-		if($query != "")
+		if ($query != "")
 		{
 			$this->num_queries++;
-
-			$this->query_result = @mysql_query($query, $this->db_connect_id);
+			$this->query_result = @mysqli_query($this->db_connect_id, $query);
 		}
-		if($this->query_result)
-		{
-			unset($this->row[$this->query_result]);
-			unset($this->rowset[$this->query_result]);
-			return $this->query_result;
-		}
-		else
+		if (!$this->query_result)
 		{
 			return ( $transaction == END_TRANSACTION ) ? true : false;
 		}
+		$key = $this->_key($this->query_result);
+		unset($this->row[$key]);
+		unset($this->rowset[$key]);
+		return $this->query_result;
 	}
 
-	//
-	// Other query methods
-	//
+	function _key($query_id)
+	{
+		return is_object($query_id) ? spl_object_id($query_id) : (int) $query_id;
+	}
+
+	function _result($query_id)
+	{
+		if (!$query_id)
+		{
+			$query_id = $this->query_result;
+		}
+		return ($query_id instanceof mysqli_result) ? $query_id : false;
+	}
+
 	function sql_numrows($query_id = 0)
 	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_num_rows($query_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
+		$query_id = $this->_result($query_id);
+		return $query_id ? @mysqli_num_rows($query_id) : false;
 	}
+
 	function sql_affectedrows()
 	{
-		if($this->db_connect_id)
-		{
-			$result = @mysql_affected_rows($this->db_connect_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
+		return $this->db_connect_id ? @mysqli_affected_rows($this->db_connect_id) : false;
 	}
+
 	function sql_numfields($query_id = 0)
 	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_num_fields($query_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
+		$query_id = $this->_result($query_id);
+		return $query_id ? @mysqli_num_fields($query_id) : false;
 	}
+
 	function sql_fieldname($offset, $query_id = 0)
 	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_field_name($query_id, $offset);
-			return $result;
-		}
-		else
+		$query_id = $this->_result($query_id);
+		if (!$query_id)
 		{
 			return false;
 		}
+		$field = @mysqli_fetch_field_direct($query_id, $offset);
+		return $field ? $field->name : false;
 	}
+
 	function sql_fieldtype($offset, $query_id = 0)
 	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_field_type($query_id, $offset);
-			return $result;
-		}
-		else
+		$query_id = $this->_result($query_id);
+		if (!$query_id)
 		{
 			return false;
 		}
+		$field = @mysqli_fetch_field_direct($query_id, $offset);
+		if (!$field)
+		{
+			return false;
+		}
+		// approximate the old mysql_field_type() names
+		switch ($field->type)
+		{
+			case MYSQLI_TYPE_TINY:
+			case MYSQLI_TYPE_SHORT:
+			case MYSQLI_TYPE_LONG:
+			case MYSQLI_TYPE_INT24:
+			case MYSQLI_TYPE_LONGLONG:
+				return 'int';
+			case MYSQLI_TYPE_FLOAT:
+			case MYSQLI_TYPE_DOUBLE:
+			case MYSQLI_TYPE_DECIMAL:
+			case MYSQLI_TYPE_NEWDECIMAL:
+				return 'real';
+			case MYSQLI_TYPE_BLOB:
+			case MYSQLI_TYPE_TINY_BLOB:
+			case MYSQLI_TYPE_MEDIUM_BLOB:
+			case MYSQLI_TYPE_LONG_BLOB:
+				return 'blob';
+			case MYSQLI_TYPE_TIMESTAMP:
+				return 'timestamp';
+			case MYSQLI_TYPE_DATE:
+				return 'date';
+			case MYSQLI_TYPE_DATETIME:
+				return 'datetime';
+			default:
+				return 'string';
+		}
 	}
+
 	function sql_fetchrow($query_id = 0)
 	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$this->row[$query_id] = @mysql_fetch_array($query_id);
-			return $this->row[$query_id];
-		}
-		else
+		$query_id = $this->_result($query_id);
+		if (!$query_id)
 		{
 			return false;
 		}
+		$row = @mysqli_fetch_array($query_id, MYSQLI_BOTH);
+		$this->row[$this->_key($query_id)] = $row;
+		return ($row === null) ? false : $row;
 	}
+
 	function sql_fetchrowset($query_id = 0)
 	{
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			unset($this->rowset[$query_id]);
-			unset($this->row[$query_id]);
-			while($this->rowset[$query_id] = @mysql_fetch_array($query_id))
-			{
-				$result[] = $this->rowset[$query_id];
-			}
-			return $result;
-		}
-		else
+		$query_id = $this->_result($query_id);
+		if (!$query_id)
 		{
 			return false;
 		}
+		$key = $this->_key($query_id);
+		unset($this->rowset[$key]);
+		unset($this->row[$key]);
+		$result = array();
+		while ($this->rowset[$key] = @mysqli_fetch_array($query_id, MYSQLI_BOTH))
+		{
+			$result[] = $this->rowset[$key];
+		}
+		return $result;
 	}
+
 	function sql_fetchfield($field, $rownum = -1, $query_id = 0)
 	{
-		if(!$query_id)
+		$query_id = $this->_result($query_id);
+		if (!$query_id)
 		{
-			$query_id = $this->query_result;
+			return false;
 		}
-		if($query_id)
+		$key = $this->_key($query_id);
+		$result = false;
+		if ($rownum > -1)
 		{
-			if($rownum > -1)
+			if (@mysqli_data_seek($query_id, $rownum))
 			{
-				$result = @mysql_result($query_id, $rownum, $field);
-			}
-			else
-			{
-				if(empty($this->row[$query_id]) && empty($this->rowset[$query_id]))
-				{
-					if($this->sql_fetchrow())
-					{
-						$result = $this->row[$query_id][$field];
-					}
-				}
-				else
-				{
-					if($this->rowset[$query_id])
-					{
-						$result = $this->rowset[$query_id][0][$field];
-					}
-					else if($this->row[$query_id])
-					{
-						$result = $this->row[$query_id][$field];
-					}
-				}
+				$row = @mysqli_fetch_array($query_id, MYSQLI_BOTH);
+				$result = isset($row[$field]) ? $row[$field] : false;
 			}
 			return $result;
 		}
-		else
+		if (empty($this->row[$key]) && empty($this->rowset[$key]))
 		{
-			return false;
+			if ($this->sql_fetchrow($query_id))
+			{
+				$result = $this->row[$key][$field];
+			}
 		}
+		else if (!empty($this->rowset[$key]))
+		{
+			$result = $this->rowset[$key][0][$field];
+		}
+		else if (!empty($this->row[$key]))
+		{
+			$result = $this->row[$key][$field];
+		}
+		return $result;
 	}
-	function sql_rowseek($rownum, $query_id = 0){
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
-		if($query_id)
-		{
-			$result = @mysql_data_seek($query_id, $rownum);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_nextid(){
-		if($this->db_connect_id)
-		{
-			$result = @mysql_insert_id($this->db_connect_id);
-			return $result;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	function sql_freeresult($query_id = 0){
-		if(!$query_id)
-		{
-			$query_id = $this->query_result;
-		}
 
-		if ( $query_id )
-		{
-			unset($this->row[$query_id]);
-			unset($this->rowset[$query_id]);
+	function sql_rowseek($rownum, $query_id = 0)
+	{
+		$query_id = $this->_result($query_id);
+		return $query_id ? @mysqli_data_seek($query_id, $rownum) : false;
+	}
 
-			@mysql_free_result($query_id);
+	function sql_nextid()
+	{
+		return $this->db_connect_id ? @mysqli_insert_id($this->db_connect_id) : false;
+	}
 
-			return true;
-		}
-		else
+	function sql_freeresult($query_id = 0)
+	{
+		$query_id = $this->_result($query_id);
+		if (!$query_id)
 		{
 			return false;
 		}
+		$key = $this->_key($query_id);
+		unset($this->row[$key]);
+		unset($this->rowset[$key]);
+		@mysqli_free_result($query_id);
+		return true;
 	}
+
+	function sql_escape($msg)
+	{
+		return $this->db_connect_id ? mysqli_real_escape_string($this->db_connect_id, $msg) : addslashes($msg);
+	}
+
 	function sql_error($query_id = 0)
 	{
-		$result["message"] = @mysql_error($this->db_connect_id);
-		$result["code"] = @mysql_errno($this->db_connect_id);
-
+		$result["message"] = $this->db_connect_id ? @mysqli_error($this->db_connect_id) : @mysqli_connect_error();
+		$result["code"] = $this->db_connect_id ? @mysqli_errno($this->db_connect_id) : @mysqli_connect_errno();
 		return $result;
 	}
 

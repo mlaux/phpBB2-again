@@ -213,6 +213,15 @@ switch( $mode )
 			//
 			$updated['style_name'] = $_POST['style_name'];
 			$updated['template_name'] = $_POST['template_name'];
+
+			//
+      // avoid code injection, this needs to be a plain identifier bc it gets
+      // included
+			//
+			if ( !preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $updated['template_name']) )
+			{
+				message_die(GENERAL_MESSAGE, $lang['Invalid_template_name']);
+			}
 			$updated['head_stylesheet'] = $_POST['head_stylesheet'];
 			$updated['body_background'] = $_POST['body_background'];
 			$updated['body_bgcolor'] = $_POST['body_bgcolor'];
@@ -709,6 +718,11 @@ switch( $mode )
 		if($_POST['export_template'])
 		{
 			$template_name = $_POST['export_template'];
+
+			if ( !preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $template_name) )
+			{
+				message_die(GENERAL_MESSAGE, $lang['Invalid_template_name']);
+			}
 
 			$sql = "SELECT * 
 				FROM " . THEMES_TABLE . " 

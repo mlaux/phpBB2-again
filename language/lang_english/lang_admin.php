@@ -614,6 +614,7 @@ $lang['Export_explain'] = 'In this panel you will be able to export the theme da
 
 $lang['Theme_installed'] = 'The selected theme has been installed successfully';
 $lang['Style_removed'] = 'The selected style has been removed from the database. To fully remove this style from your system you must delete the appropriate style from your templates directory.';
+$lang['Invalid_template_name'] = 'The template name may only contain letters, numbers and underscores, and must not start with a number.';
 $lang['Theme_info_saved'] = 'The theme information for the selected template has been saved. You should now return the permissions on the theme_info.cfg (and if applicable the selected template directory) to read-only';
 $lang['Theme_updated'] = 'The selected theme has been updated. You should now export the new theme settings';
 $lang['Theme_created'] = 'Theme created. You should now export the theme to the theme configuration file for safe keeping or use elsewhere';

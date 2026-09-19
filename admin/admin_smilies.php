@@ -105,6 +105,7 @@ if( isset($_GET['import_pack']) || isset($_POST['import_pack']) )
 	// Import a list a "Smiley Pack"
 	//
 	$smile_pak = ( isset($_POST['smile_pak']) ) ? $_POST['smile_pak'] : $_GET['smile_pak'];
+	$smile_pak = basename($smile_pak);
 	$clear_current = ( isset($_POST['clear_current']) ) ? $_POST['clear_current'] : $_GET['clear_current'];
 	$replace_existing = ( isset($_POST['replace']) ) ? $_POST['replace'] : $_GET['replace'];
 

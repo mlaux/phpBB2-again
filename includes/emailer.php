@@ -137,6 +137,11 @@ class emailer
 	{
 		global $board_config, $lang, $phpEx, $phpbb_root_path, $db;
 
+		if (isset($board_config['email_enable']) && !$board_config['email_enable'])
+		{
+			return true;
+		}
+
     	// Escape all quotes, else the eval will fail.
 		$this->msg = str_replace ("'", "\'", $this->msg);
 		$this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);

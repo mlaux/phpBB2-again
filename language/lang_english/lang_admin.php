@@ -306,6 +306,8 @@ $lang['COPPA_mail'] = 'COPPA Mailing Address';
 $lang['COPPA_mail_explain'] = 'This is the mailing address to which parents will send COPPA registration forms';
 
 $lang['Email_settings'] = 'Email Settings';
+$lang['Email_enable'] = 'Enable email';
+$lang['Email_enable_explain'] = 'When disabled the board never tries to send mail (registration, notifications, mass email).';
 $lang['Admin_email'] = 'Admin Email Address';
 $lang['Email_sig'] = 'Email Signature';
 $lang['Email_sig_explain'] = 'This text will be attached to all emails the board sends';

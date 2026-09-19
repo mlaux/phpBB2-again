@@ -31,6 +31,11 @@ include($phpbb_root_path . 'includes/functions_selects.'.$phpEx);
 //
 // Pull all config data
 //
+if (!isset($board_config['email_enable']))
+{
+	$db->sql_query("INSERT INTO " . CONFIG_TABLE . " (config_name, config_value) VALUES ('email_enable', '1')");
+}
+
 $sql = "SELECT *
 	FROM " . CONFIG_TABLE;
 if(!$result = $db->sql_query($sql))
@@ -150,6 +155,8 @@ $avatars_upload_no = ( !$new['allow_avatar_upload'] ) ? "checked=\"checked\"" : 
 
 $smtp_yes = ( $new['smtp_delivery'] ) ? "checked=\"checked\"" : "";
 $smtp_no = ( !$new['smtp_delivery'] ) ? "checked=\"checked\"" : "";
+$email_enable_yes = ( $new['email_enable'] ) ? "checked=\"checked\"" : "";
+$email_enable_no = ( !$new['email_enable'] ) ? "checked=\"checked\"" : "";
 
 $template->set_filenames(array(
 	"body" => "admin/board_config_body.tpl")
@@ -260,6 +267,10 @@ $template->assign_vars(array(
 	"L_COPPA_MAIL" => $lang['COPPA_mail'],
 	"L_COPPA_MAIL_EXPLAIN" => $lang['COPPA_mail_explain'],
 	"L_EMAIL_SETTINGS" => $lang['Email_settings'],
+	"L_EMAIL_ENABLE" => $lang['Email_enable'],
+	"L_EMAIL_ENABLE_EXPLAIN" => $lang['Email_enable_explain'],
+	"EMAIL_ENABLE" => $email_enable_yes,
+	"EMAIL_DISABLE" => $email_enable_no,
 	"L_ADMIN_EMAIL" => $lang['Admin_email'],
 	"L_EMAIL_SIG" => $lang['Email_sig'],
 	"L_EMAIL_SIG_EXPLAIN" => $lang['Email_sig_explain'],

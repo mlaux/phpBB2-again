@@ -240,6 +240,10 @@
 	  <th class="thHead" colspan="2">{L_EMAIL_SETTINGS}</th>
 	</tr>
 	<tr>
+		<td class="row1">{L_EMAIL_ENABLE}<br /><span class="gensmall">{L_EMAIL_ENABLE_EXPLAIN}</span></td>
+		<td class="row2"><input type="radio" name="email_enable" value="1" {EMAIL_ENABLE} /> {L_ENABLED}&nbsp;&nbsp;<input type="radio" name="email_enable" value="0" {EMAIL_DISABLE} /> {L_DISABLED}</td>
+	</tr>
+	<tr>
 		<td class="row1">{L_ADMIN_EMAIL}</td>
 		<td class="row2"><input class="post" type="text" size="25" maxlength="100" name="board_email" value="{EMAIL_FROM}" /></td>
 	</tr>

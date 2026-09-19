@@ -202,6 +202,8 @@ if ( isset($_POST['groupstatus']) && $group_id )
 }
 else if ( isset($_POST['joingroup']) && $group_id )
 {
+	phpbb_check_form_sid();
+
 	//
 	// First, joining a group
 	// If the user isn't logged in redirect them to login
@@ -307,6 +309,8 @@ else if ( isset($_POST['joingroup']) && $group_id )
 }
 else if ( isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id )
 {
+	phpbb_check_form_sid();
+
 	//
 	// Second, unsubscribing from a group
 	// Check for confirmation of unsub.

@@ -252,6 +252,8 @@ if ($mode == 'register' && ($userdata['session_logged_in'] || $username == $user
 //
 if ( isset($_POST['submit']) )
 {
+	phpbb_check_form_sid();
+
 	include($phpbb_root_path . 'includes/usercp_avatar.'.$phpEx);
 
 	// session id check

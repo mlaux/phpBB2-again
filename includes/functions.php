@@ -145,30 +145,28 @@ function phpbb_rtrim($str, $charlist = false)
 * The board wide setting is updated once per page if this code is called
 * With thanks to Anthrax101 for the inspiration on this one
 * Added in phpBB 2.0.20
+*
+* 2.0.23-php8: use built in random
 */
 function dss_rand()
 {
-	global $db, $board_config, $dss_seeded;
+	return bin2hex(random_bytes(8));
+}
 
-	$val = $board_config['rand_seed'] . microtime();
-	$val = md5($val);
-	$board_config['rand_seed'] = md5($board_config['rand_seed'] . $val . 'a');
-   
-	if($dss_seeded !== true)
-	{
-		$sql = "UPDATE " . CONFIG_TABLE . " SET
-			config_value = '" . $board_config['rand_seed'] . "'
-			WHERE config_name = 'rand_seed'";
-		
-		if( !$db->sql_query($sql) )
-		{
-			message_die(GENERAL_ERROR, "Unable to reseed PRNG", "", __LINE__, __FILE__, $sql);
-		}
+function phpbb_setcookie($name, $value, $expire)
+{
+	global $board_config;
 
-		$dss_seeded = true;
-	}
+	$path = ($board_config['cookie_path'] != '') ? $board_config['cookie_path'] : '/';
 
-	return substr($val, 4, 16);
+	setcookie($name, $value, array(
+		'expires'  => $expire,
+		'path'     => $path,
+		'domain'   => $board_config['cookie_domain'],
+		'secure'   => (bool) $board_config['cookie_secure'],
+		'httponly' => true,
+		'samesite' => 'Lax')
+	);
 }
 
 //
@@ -196,6 +194,38 @@ function phpbb_check_password($password, $hash)
 	}
 
 	return password_verify($password, $hash);
+}
+
+//
+// Avoids == treating two "0e..." strings as equal
+//
+function phpbb_token_equals($known, $supplied)
+{
+	if (!is_string($known) || !is_string($supplied) || $known === '')
+	{
+		return false;
+	}
+
+	return hash_equals($known, $supplied);
+}
+
+//
+// CSRF check for state changing POSTs - every form already had a hidden sid
+// field, it was just never verified
+//
+function phpbb_check_form_sid()
+{
+	global $userdata;
+
+	if ( empty($userdata['session_logged_in']) )
+	{
+		return;
+	}
+
+	if ( !phpbb_token_equals($userdata['session_id'], isset($_POST['sid']) ? $_POST['sid'] : '') )
+	{
+		message_die(GENERAL_ERROR, 'Invalid_session');
+	}
 }
 
 //

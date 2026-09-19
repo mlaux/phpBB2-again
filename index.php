@@ -52,7 +52,7 @@ if( $mark_read == 'forums' )
 {
 	if( $userdata['session_logged_in'] )
 	{
-		setcookie($board_config['cookie_name'] . '_f_all', time(), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
+		phpbb_setcookie($board_config['cookie_name'] . '_f_all', time(), 0);
 	}
 
 	$template->assign_vars(array(
@@ -67,8 +67,8 @@ if( $mark_read == 'forums' )
 // End handle marking posts
 //
 
-$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . "_t"]) : array();
-$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . "_f"]) : array();
+$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . "_t"], array('allowed_classes' => false)) : array();
+$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . "_f"], array('allowed_classes' => false)) : array();
 
 //
 // If you don't use these stats on your index you may want to consider

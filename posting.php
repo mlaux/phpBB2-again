@@ -537,6 +537,8 @@ else if ( $mode == 'vote' )
 }
 else if ( $submit || $confirm )
 {
+	phpbb_check_form_sid();
+
 	//
 	// Submit post/vote (newtopic, edit, reply, etc.)
 	//
@@ -598,8 +600,8 @@ else if ( $submit || $confirm )
 
 		if ( $mode == 'newtopic' || $mode == 'reply' )
 		{
-			$tracking_topics = ( !empty($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : array();
-			$tracking_forums = ( !empty($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
+			$tracking_topics = ( !empty($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
+			$tracking_forums = ( !empty($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
 
 			if ( count($tracking_topics) + count($tracking_forums) == 100 && empty($tracking_topics[$topic_id]) )
 			{
@@ -609,7 +611,7 @@ else if ( $submit || $confirm )
 
 			$tracking_topics[$topic_id] = time();
 
-			setcookie($board_config['cookie_name'] . '_t', serialize($tracking_topics), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
+			phpbb_setcookie($board_config['cookie_name'] . '_t', serialize($tracking_topics), 0);
 		}
 
 		$template->assign_vars(array(

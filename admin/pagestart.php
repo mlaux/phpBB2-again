@@ -47,7 +47,7 @@ else if ($userdata['user_level'] != ADMIN)
 	message_die(GENERAL_MESSAGE, $lang['Not_admin']);
 }
 
-if ($_GET['sid'] != $userdata['session_id'])
+if (!phpbb_token_equals($userdata['session_id'], isset($_GET['sid']) ? $_GET['sid'] : ''))
 {
 	redirect("index.$phpEx?sid=" . $userdata['session_id']);
 }

@@ -37,7 +37,7 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 	if ( isset($_COOKIE[$cookiename . '_sid']) || isset($_COOKIE[$cookiename . '_data']) )
 	{
 		$session_id = isset($_COOKIE[$cookiename . '_sid']) ? $_COOKIE[$cookiename . '_sid'] : '';
-		$sessiondata = isset($_COOKIE[$cookiename . '_data']) ? unserialize(stripslashes($_COOKIE[$cookiename . '_data'])) : array();
+		$sessiondata = isset($_COOKIE[$cookiename . '_data']) ? (array) @unserialize(stripslashes($_COOKIE[$cookiename . '_data']), array('allowed_classes' => false)) : array();
 		$sessionmethod = SESSION_METHOD_COOKIE;
 	}
 	else
@@ -251,8 +251,8 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 	$userdata['session_admin'] = $admin;
 	$userdata['session_key'] = $sessiondata['autologinid'];
 
-	setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
-	setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
+	phpbb_setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000);
+	phpbb_setcookie($cookiename . '_sid', $session_id, 0);
 
 	$SID = 'sid=' . $session_id;
 
@@ -278,7 +278,7 @@ function session_pagestart($user_ip, $thispage_id)
 
 	if ( isset($_COOKIE[$cookiename . '_sid']) || isset($_COOKIE[$cookiename . '_data']) )
 	{
-		$sessiondata = isset( $_COOKIE[$cookiename . '_data'] ) ? unserialize(stripslashes($_COOKIE[$cookiename . '_data'])) : array();
+		$sessiondata = isset( $_COOKIE[$cookiename . '_data'] ) ? (array) @unserialize(stripslashes($_COOKIE[$cookiename . '_data']), array('allowed_classes' => false)) : array();
 		$session_id = isset( $_COOKIE[$cookiename . '_sid'] ) ? $_COOKIE[$cookiename . '_sid'] : '';
 		$sessionmethod = SESSION_METHOD_COOKIE;
 	}
@@ -363,8 +363,8 @@ function session_pagestart($user_ip, $thispage_id)
 
 					session_clean($userdata['session_id']);
 
-					setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
-					setcookie($cookiename . '_sid', $session_id, 0, $cookiepath, $cookiedomain, $cookiesecure);
+					phpbb_setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000);
+					phpbb_setcookie($cookiename . '_sid', $session_id, 0);
 				}
 
 				// Add the session_key to the userdata array if it is set
@@ -459,8 +459,8 @@ function session_end($session_id, $user_id)
 	$db->sql_freeresult($result);
 
 
-	setcookie($cookiename . '_data', '', $current_time - 31536000, $cookiepath, $cookiedomain, $cookiesecure);
-	setcookie($cookiename . '_sid', '', $current_time - 31536000, $cookiepath, $cookiedomain, $cookiesecure);
+	phpbb_setcookie($cookiename . '_data', '', $current_time - 31536000);
+	phpbb_setcookie($cookiename . '_sid', '', $current_time - 31536000);
 
 	return true;
 }
@@ -549,7 +549,7 @@ function session_reset_keys($user_id, $user_ip)
 		$cookiedomain = $board_config['cookie_domain'];
 		$cookiesecure = $board_config['cookie_secure'];
 
-		setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000, $cookiepath, $cookiedomain, $cookiesecure);
+		phpbb_setcookie($cookiename . '_data', serialize($sessiondata), $current_time + 31536000);
 		
 		$userdata['session_key'] = $auto_login_key;
 		unset($sessiondata);

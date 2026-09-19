@@ -159,7 +159,7 @@ if( isset($_POST['login']) || isset($_GET['login']) || isset($_POST['logout']) |
 	else if( ( isset($_GET['logout']) || isset($_POST['logout']) ) && $userdata['session_logged_in'] )
 	{
 		// session id check
-		if ($sid == '' || $sid != $userdata['session_id'])
+		if (!phpbb_token_equals($userdata['session_id'], $sid))
 		{
 			message_die(GENERAL_ERROR, 'Invalid_session');
 		}

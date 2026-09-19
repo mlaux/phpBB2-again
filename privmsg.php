@@ -1077,6 +1077,11 @@ else if ( $save && $mark_list && $folder != 'savebox' && $folder != 'outbox' )
 }
 else if ( $submit || $refresh || $mode != '' )
 {
+	if ( $submit )
+	{
+		phpbb_check_form_sid();
+	}
+
 	if ( !$userdata['session_logged_in'] )
 	{
 		$user_id = ( isset($_GET[POST_USERS_URL]) ) ? '&' . POST_USERS_URL . '=' . intval($_GET[POST_USERS_URL]) : '';

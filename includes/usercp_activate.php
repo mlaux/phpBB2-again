@@ -45,7 +45,7 @@ if ( $row = $db->sql_fetchrow($result) )
 
 		message_die(GENERAL_MESSAGE, $lang['Already_activated']);
 	}
-	else if ((trim($row['user_actkey']) == trim($_GET['act_key'])) && (trim($row['user_actkey']) != ''))
+	else if ( phpbb_token_equals(trim($row['user_actkey']), trim(isset($_GET['act_key']) ? $_GET['act_key'] : '')) )
 	{
 		if (intval($board_config['require_activation']) == USER_ACTIVATION_ADMIN && $row['user_newpasswd'] == '')
 		{

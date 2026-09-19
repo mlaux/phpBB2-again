@@ -60,9 +60,9 @@ $server_url = $server_protocol . $server_name . $server_port . $script_name;
 //
 function gen_rand_string($hash)
 {
-	$rand_str = dss_rand();
+	$rand_str = dss_rand() . dss_rand();
 
-	return ( $hash ) ? md5($rand_str) : substr($rand_str, 0, 8);
+	return ( $hash ) ? md5($rand_str) : substr($rand_str, 0, 12);
 }
 //
 // End page specific functions

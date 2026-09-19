@@ -134,8 +134,8 @@ if ( $mark_read == 'topics' )
 
 		if ( $row = $db->sql_fetchrow($result) )
 		{
-			$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
-			$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : array();
+			$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
+			$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
 
 			if ( ( count($tracking_forums) + count($tracking_topics) ) >= 150 && empty($tracking_forums[$forum_id]) )
 			{
@@ -147,7 +147,7 @@ if ( $mark_read == 'topics' )
 			{
 				$tracking_forums[$forum_id] = time();
 
-				setcookie($board_config['cookie_name'] . '_f', serialize($tracking_forums), 0, $board_config['cookie_path'], $board_config['cookie_domain'], $board_config['cookie_secure']);
+				phpbb_setcookie($board_config['cookie_name'] . '_f', serialize($tracking_forums), 0);
 			}
 		}
 
@@ -163,8 +163,8 @@ if ( $mark_read == 'topics' )
 // End handle marking posts
 //
 
-$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : '';
-$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : '';
+$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . '_t'], array('allowed_classes' => false)) : '';
+$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . '_f'], array('allowed_classes' => false)) : '';
 
 //
 // Do the forum Prune

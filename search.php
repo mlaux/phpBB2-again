@@ -737,7 +737,7 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 
 			if ( $row = $db->sql_fetchrow($result) )
 			{
-				$search_data = unserialize($row['search_array']);
+				$search_data = unserialize($row['search_array'], array('allowed_classes' => false));
 				for($i = 0; $i < count($store_vars); $i++)
 				{
 					${$store_vars[$i]} = $search_data[$store_vars[$i]];
@@ -869,8 +869,8 @@ else if ( $search_keywords != '' || $search_author != '' || $search_id )
 
 		$highlight_active = urlencode(trim($highlight_active));
 
-		$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : array();
-		$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
+		$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . '_t'], array('allowed_classes' => false)) : array();
+		$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? (array) @unserialize($_COOKIE[$board_config['cookie_name'] . '_f'], array('allowed_classes' => false)) : array();
 
 		for($i = 0; $i < count($searchset); $i++)
 		{

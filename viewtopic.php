@@ -30,22 +30,22 @@ include($phpbb_root_path . 'includes/bbcode.'.$phpEx);
 // Start initial var setup
 //
 $topic_id = $post_id = 0;
-if ( isset($HTTP_GET_VARS[POST_TOPIC_URL]) )
+if ( isset($_GET[POST_TOPIC_URL]) )
 {
-	$topic_id = intval($HTTP_GET_VARS[POST_TOPIC_URL]);
+	$topic_id = intval($_GET[POST_TOPIC_URL]);
 }
-else if ( isset($HTTP_GET_VARS['topic']) )
+else if ( isset($_GET['topic']) )
 {
-	$topic_id = intval($HTTP_GET_VARS['topic']);
-}
-
-if ( isset($HTTP_GET_VARS[POST_POST_URL]))
-{
-	$post_id = intval($HTTP_GET_VARS[POST_POST_URL]);
+	$topic_id = intval($_GET['topic']);
 }
 
+if ( isset($_GET[POST_POST_URL]))
+{
+	$post_id = intval($_GET[POST_POST_URL]);
+}
 
-$start = ( isset($HTTP_GET_VARS['start']) ) ? intval($HTTP_GET_VARS['start']) : 0;
+
+$start = ( isset($_GET['start']) ) ? intval($_GET['start']) : 0;
 $start = ($start < 0) ? 0 : $start;
 
 if (!$topic_id && !$post_id)
@@ -57,13 +57,13 @@ if (!$topic_id && !$post_id)
 // Find topic id if user requested a newer
 // or older topic
 //
-if ( isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL]) )
+if ( isset($_GET['view']) && empty($_GET[POST_POST_URL]) )
 {
-	if ( $HTTP_GET_VARS['view'] == 'newest' )
+	if ( $_GET['view'] == 'newest' )
 	{
-		if ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_sid']) || isset($HTTP_GET_VARS['sid']) )
+		if ( isset($_COOKIE[$board_config['cookie_name'] . '_sid']) || isset($_GET['sid']) )
 		{
-			$session_id = isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_sid']) ? $HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_sid'] : $HTTP_GET_VARS['sid'];
+			$session_id = isset($_COOKIE[$board_config['cookie_name'] . '_sid']) ? $_COOKIE[$board_config['cookie_name'] . '_sid'] : $_GET['sid'];
 
 			if (!preg_match('/^[A-Za-z0-9]*$/', $session_id)) 
 			{
@@ -92,7 +92,7 @@ if ( isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL]) )
 
 				$post_id = $row['post_id'];
 
-				if (isset($HTTP_GET_VARS['sid']))
+				if (isset($_GET['sid']))
 				{
 					redirect("viewtopic.$phpEx?sid=$session_id&" . POST_POST_URL . "=$post_id#$post_id");
 				}
@@ -105,10 +105,10 @@ if ( isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL]) )
 
 		redirect(append_sid("viewtopic.$phpEx?" . POST_TOPIC_URL . "=$topic_id", true));
 	}
-	else if ( $HTTP_GET_VARS['view'] == 'next' || $HTTP_GET_VARS['view'] == 'previous' )
+	else if ( $_GET['view'] == 'next' || $_GET['view'] == 'previous' )
 	{
-		$sql_condition = ( $HTTP_GET_VARS['view'] == 'next' ) ? '>' : '<';
-		$sql_ordering = ( $HTTP_GET_VARS['view'] == 'next' ) ? 'ASC' : 'DESC';
+		$sql_condition = ( $_GET['view'] == 'next' ) ? '>' : '<';
+		$sql_ordering = ( $_GET['view'] == 'next' ) ? 'ASC' : 'DESC';
 
 		$sql = "SELECT t.topic_id
 			FROM " . TOPICS_TABLE . " t, " . TOPICS_TABLE . " t2
@@ -130,7 +130,7 @@ if ( isset($HTTP_GET_VARS['view']) && empty($HTTP_GET_VARS[POST_POST_URL]) )
 		}
 		else
 		{
-			$message = ( $HTTP_GET_VARS['view'] == 'next' ) ? 'No_newer_topics' : 'No_older_topics';
+			$message = ( $_GET['view'] == 'next' ) ? 'No_newer_topics' : 'No_older_topics';
 			message_die(GENERAL_MESSAGE, $message);
 		}
 	}
@@ -224,9 +224,9 @@ if( $userdata['session_logged_in'] )
 
 	if ( $row = $db->sql_fetchrow($result) )
 	{
-		if ( isset($HTTP_GET_VARS['unwatch']) )
+		if ( isset($_GET['unwatch']) )
 		{
-			if ( $HTTP_GET_VARS['unwatch'] == 'topic' )
+			if ( $_GET['unwatch'] == 'topic' )
 			{
 				$is_watching_topic = 0;
 
@@ -267,9 +267,9 @@ if( $userdata['session_logged_in'] )
 	}
 	else
 	{
-		if ( isset($HTTP_GET_VARS['watch']) )
+		if ( isset($_GET['watch']) )
 		{
-			if ( $HTTP_GET_VARS['watch'] == 'topic' )
+			if ( $_GET['watch'] == 'topic' )
 			{
 				$is_watching_topic = TRUE;
 
@@ -297,9 +297,9 @@ if( $userdata['session_logged_in'] )
 }
 else
 {
-	if ( isset($HTTP_GET_VARS['unwatch']) )
+	if ( isset($_GET['unwatch']) )
 	{
-		if ( $HTTP_GET_VARS['unwatch'] == 'topic' )
+		if ( $_GET['unwatch'] == 'topic' )
 		{
 			redirect(append_sid("login.$phpEx?redirect=viewtopic.$phpEx&" . POST_TOPIC_URL . "=$topic_id&unwatch=topic", true));
 		}
@@ -319,9 +319,9 @@ else
 $previous_days = array(0, 1, 7, 14, 30, 90, 180, 364);
 $previous_days_text = array($lang['All_Posts'], $lang['1_Day'], $lang['7_Days'], $lang['2_Weeks'], $lang['1_Month'], $lang['3_Months'], $lang['6_Months'], $lang['1_Year']);
 
-if( !empty($HTTP_POST_VARS['postdays']) || !empty($HTTP_GET_VARS['postdays']) )
+if( !empty($_POST['postdays']) || !empty($_GET['postdays']) )
 {
-	$post_days = ( !empty($HTTP_POST_VARS['postdays']) ) ? intval($HTTP_POST_VARS['postdays']) : intval($HTTP_GET_VARS['postdays']);
+	$post_days = ( !empty($_POST['postdays']) ) ? intval($_POST['postdays']) : intval($_GET['postdays']);
 	$min_post_time = time() - (intval($post_days) * 86400);
 
 	$sql = "SELECT COUNT(p.post_id) AS num_posts
@@ -338,7 +338,7 @@ if( !empty($HTTP_POST_VARS['postdays']) || !empty($HTTP_GET_VARS['postdays']) )
 
 	$limit_posts_time = "AND p.post_time >= $min_post_time ";
 
-	if ( !empty($HTTP_POST_VARS['postdays']))
+	if ( !empty($_POST['postdays']))
 	{
 		$start = 0;
 	}
@@ -362,9 +362,9 @@ $select_post_days .= '</select>';
 //
 // Decide how to order the post display
 //
-if ( !empty($HTTP_POST_VARS['postorder']) || !empty($HTTP_GET_VARS['postorder']) )
+if ( !empty($_POST['postorder']) || !empty($_GET['postorder']) )
 {
-	$post_order = (!empty($HTTP_POST_VARS['postorder'])) ? htmlspecialchars($HTTP_POST_VARS['postorder']) : htmlspecialchars($HTTP_GET_VARS['postorder']);
+	$post_order = (!empty($_POST['postorder'])) ? htmlspecialchars($_POST['postorder']) : htmlspecialchars($_GET['postorder']);
 	$post_time_order = ($post_order == "asc") ? "ASC" : "DESC";
 }
 else
@@ -482,10 +482,10 @@ if ( count($orig_word) )
 // Was a highlight request part of the URI?
 //
 $highlight_match = $highlight = '';
-if (isset($HTTP_GET_VARS['highlight']))
+if (isset($_GET['highlight']))
 {
 	// Split words and phrases
-	$words = explode(' ', trim(htmlspecialchars($HTTP_GET_VARS['highlight'])));
+	$words = explode(' ', trim(htmlspecialchars($_GET['highlight'])));
 
 	for($i = 0; $i < sizeof($words); $i++)
 	{
@@ -496,7 +496,7 @@ if (isset($HTTP_GET_VARS['highlight']))
 	}
 	unset($words);
 
-	$highlight = urlencode($HTTP_GET_VARS['highlight']);
+	$highlight = urlencode($_GET['highlight']);
 	$highlight_match = phpbb_rtrim($highlight_match, "\\");
 }
 
@@ -536,8 +536,8 @@ $post_alt = ( $forum_topic_data['forum_status'] == FORUM_LOCKED ) ? $lang['Forum
 //
 if ( $userdata['session_logged_in'] )
 {
-	$tracking_topics = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_t']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_t']) : array();
-	$tracking_forums = ( isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) ) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) : array();
+	$tracking_topics = ( isset($_COOKIE[$board_config['cookie_name'] . '_t']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_t']) : array();
+	$tracking_forums = ( isset($_COOKIE[$board_config['cookie_name'] . '_f']) ) ? unserialize($_COOKIE[$board_config['cookie_name'] . '_f']) : array();
 
 	if ( !empty($tracking_topics[$topic_id]) && !empty($tracking_forums[$forum_id]) )
 	{
@@ -710,9 +710,9 @@ if ( !empty($forum_topic_data['topic_vote']) )
 		$user_voted = ( $row = $db->sql_fetchrow($result) ) ? TRUE : 0;
 		$db->sql_freeresult($result);
 
-		if ( isset($HTTP_GET_VARS['vote']) || isset($HTTP_POST_VARS['vote']) )
+		if ( isset($_GET['vote']) || isset($_POST['vote']) )
 		{
-			$view_result = ( ( ( isset($HTTP_GET_VARS['vote']) ) ? $HTTP_GET_VARS['vote'] : $HTTP_POST_VARS['vote'] ) == 'viewresult' ) ? TRUE : 0;
+			$view_result = ( ( ( isset($_GET['vote']) ) ? $_GET['vote'] : $_POST['vote'] ) == 'viewresult' ) ? TRUE : 0;
 		}
 		else
 		{

@@ -140,6 +140,10 @@ if ( isset($_POST['submit']) )
 					}
 				}
 			}
+			else if ( filter_var(trim($ip_list_temp[$i]), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) )
+			{
+				$ip_list[] = encode_ip(trim($ip_list_temp[$i]));
+			}
 			else if ( preg_match('/^([0-9]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})\.([0-9\*]{1,3})$/', trim($ip_list_temp[$i])) )
 			{
 				$ip_list[] = encode_ip(str_replace('*', '255', trim($ip_list_temp[$i])));
@@ -405,7 +409,11 @@ else
 
 		if ( !empty($banlist[$i]['ban_ip']) )
 		{
-			$ban_ip = str_replace('255', '*', decode_ip($banlist[$i]['ban_ip']));
+			$ban_ip = decode_ip($banlist[$i]['ban_ip']);
+			if (strlen($banlist[$i]['ban_ip']) == 8)
+			{
+				$ban_ip = str_replace('255', '*', $ban_ip);
+			}
 			$select_iplist .= '<option value="' . $ban_id . '">' . $ban_ip . '</option>';
 			$ipban_count++;
 		}

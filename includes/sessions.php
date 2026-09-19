@@ -144,11 +144,20 @@ function session_begin($user_id, $user_ip, $page_id, $auto_create = 0, $enable_a
 	//
 	// Initial ban check against user id, IP and email address
 	//
-	preg_match('/(..)(..)(..)(..)/', $user_ip, $user_ip_parts);
+	if (strlen($user_ip) == 8)
+	{
+		preg_match('/(..)(..)(..)(..)/', $user_ip, $user_ip_parts);
+		$ban_ip_sql = "'" . $user_ip_parts[1] . $user_ip_parts[2] . $user_ip_parts[3] . $user_ip_parts[4] . "', '" . $user_ip_parts[1] . $user_ip_parts[2] . $user_ip_parts[3] . "ff', '" . $user_ip_parts[1] . $user_ip_parts[2] . "ffff', '" . $user_ip_parts[1] . "ffffff'";
+	}
+	else
+	{
+		// IPv6: exact match only
+		$ban_ip_sql = "'$user_ip'";
+	}
 
 	$sql = "SELECT ban_ip, ban_userid, ban_email 
 		FROM " . BANLIST_TABLE . " 
-		WHERE ban_ip IN ('" . $user_ip_parts[1] . $user_ip_parts[2] . $user_ip_parts[3] . $user_ip_parts[4] . "', '" . $user_ip_parts[1] . $user_ip_parts[2] . $user_ip_parts[3] . "ff', '" . $user_ip_parts[1] . $user_ip_parts[2] . "ffff', '" . $user_ip_parts[1] . "ffffff')
+		WHERE ban_ip IN ($ban_ip_sql)
 			OR ban_userid = $user_id";
 	if ( $user_id != ANONYMOUS )
 	{
@@ -327,8 +336,10 @@ function session_pagestart($user_ip, $thispage_id)
 			// bits ... I've been told (by vHiker) this should alleviate problems with 
 			// load balanced et al proxies while retaining some reliance on IP security.
 			//
-			$ip_check_s = substr($userdata['session_ip'], 0, 6);
-			$ip_check_u = substr($user_ip, 0, 6);
+			// IPv4: first 24 bits, IPv6: first 64 bits
+			$ip_check_len = (strlen($user_ip) == 8) ? 6 : 16;
+			$ip_check_s = substr($userdata['session_ip'], 0, $ip_check_len);
+			$ip_check_u = substr($user_ip, 0, $ip_check_len);
 
 			if ($ip_check_s == $ip_check_u)
 			{

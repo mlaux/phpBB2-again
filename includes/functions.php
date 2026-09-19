@@ -575,14 +575,29 @@ function setup_style($style)
 	return $row;
 }
 
+// IPv4 -> 8 hex chars, IPv6 -> 32 hex chars
 function encode_ip($dotquad_ip)
 {
+	if (strpos($dotquad_ip, ':') !== false)
+	{
+		$bin = @inet_pton($dotquad_ip);
+		return ($bin === false) ? '00000000' : bin2hex($bin);
+	}
 	$ip_sep = explode('.', $dotquad_ip);
+	if (count($ip_sep) != 4)
+	{
+		return '00000000';
+	}
 	return sprintf('%02x%02x%02x%02x', $ip_sep[0], $ip_sep[1], $ip_sep[2], $ip_sep[3]);
 }
 
 function decode_ip($int_ip)
 {
+	if (strlen($int_ip) == 32)
+	{
+		$ip = @inet_ntop(hex2bin($int_ip));
+		return ($ip === false) ? '' : $ip;
+	}
 	$hexipbang = explode('.', chunk_split($int_ip, 2, '.'));
 	return hexdec($hexipbang[0]). '.' . hexdec($hexipbang[1]) . '.' . hexdec($hexipbang[2]) . '.' . hexdec($hexipbang[3]);
 }

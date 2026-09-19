@@ -325,46 +325,11 @@ include($phpbb_root_path.'includes/sessions.'.$phpEx);
 // Define schema info
 $available_dbms = array(
 	'mysql'=> array(
-		'LABEL'			=> 'MySQL 3.x',
+		'LABEL'			=> 'MySQL / MariaDB',
 		'SCHEMA'		=> 'mysql', 
 		'DELIM'			=> ';',
 		'DELIM_BASIC'	=> ';',
 		'COMMENTS'		=> 'remove_remarks'
-	), 
-	'mysql4' => array(
-		'LABEL'			=> 'MySQL 4.x/5.x',
-		'SCHEMA'		=> 'mysql', 
-		'DELIM'			=> ';', 
-		'DELIM_BASIC'	=> ';',
-		'COMMENTS'		=> 'remove_remarks'
-	), 
-	'postgres' => array(
-		'LABEL'			=> 'PostgreSQL 7.x',
-		'SCHEMA'		=> 'postgres', 
-		'DELIM'			=> ';', 
-		'DELIM_BASIC'	=> ';',
-		'COMMENTS'		=> 'remove_comments'
-	), 
-	'mssql' => array(
-		'LABEL'			=> 'MS SQL Server 7/2000',
-		'SCHEMA'		=> 'mssql', 
-		'DELIM'			=> 'GO', 
-		'DELIM_BASIC'	=> ';',
-		'COMMENTS'		=> 'remove_comments'
-	),
-	'msaccess' => array(
-		'LABEL'			=> 'MS Access [ ODBC ]',
-		'SCHEMA'		=> '', 
-		'DELIM'			=> '', 
-		'DELIM_BASIC'	=> ';',
-		'COMMENTS'		=> ''
-	),
-	'mssql-odbc' =>	array(
-		'LABEL'			=> 'MS SQL Server [ ODBC ]',
-		'SCHEMA'		=> 'mssql', 
-		'DELIM'			=> 'GO',
-		'DELIM_BASIC'	=> ';',
-		'COMMENTS'		=> 'remove_comments'
 	)
 );
 
@@ -772,26 +737,9 @@ else
 	{
 		switch($dbms)
 		{
-			case 'msaccess':
-			case 'mssql-odbc':
-				$check_exts = 'odbc';
-				$check_other = 'odbc';
-				break;
-
-			case 'mssql':
-				$check_exts = 'mssql';
-				$check_other = 'sybase';
-				break;
-
 			case 'mysql':
-			case 'mysql4':
-				$check_exts = 'mysql';
-				$check_other = 'mysql';
-				break;
-
-			case 'postgres':
-				$check_exts = 'pgsql';
-				$check_other = 'pgsql';
+				$check_exts = 'mysqli';
+				$check_other = 'mysqli';
 				break;
 		}
 
@@ -817,20 +765,18 @@ else
 	{
 		if ($upgrade != 1)
 		{
-			if ($dbms != 'msaccess')
-			{
-				// Load in the sql parser
-				include($phpbb_root_path.'includes/sql_parse.'.$phpEx);
+      // Load in the sql parser
+      include($phpbb_root_path.'includes/sql_parse.'.$phpEx);
 
-				// Ok we have the db info go ahead and read in the relevant schema
-				// and work on building the table.. probably ought to provide some
-				// kind of feedback to the user as we are working here in order
-				// to let them know we are actually doing something.
-				$sql_query = @fread(@fopen($dbms_schema, 'r'), @filesize($dbms_schema));
-				$sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
+      // Ok we have the db info go ahead and read in the relevant schema
+      // and work on building the table.. probably ought to provide some
+      // kind of feedback to the user as we are working here in order
+      // to let them know we are actually doing something.
+      $sql_query = @fread(@fopen($dbms_schema, 'r'), @filesize($dbms_schema));
+      $sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
 
-				$sql_query = $remove_remarks($sql_query);
-				$sql_query = split_sql_file($sql_query, $delimiter);
+      $sql_query = $remove_remarks($sql_query);
+      $sql_query = split_sql_file($sql_query, $delimiter);
 
       for ($i = 0; $i < sizeof($sql_query); $i++)
       {
@@ -852,8 +798,8 @@ else
       $sql_query = @fread(@fopen($dbms_basic, 'r'), @filesize($dbms_basic));
       $sql_query = preg_replace('/phpbb_/', $table_prefix, $sql_query);
 
-				$sql_query = $remove_remarks($sql_query);
-				$sql_query = split_sql_file($sql_query, $delimiter_basic);
+      $sql_query = $remove_remarks($sql_query);
+      $sql_query = split_sql_file($sql_query, $delimiter_basic);
 
       for($i = 0; $i < sizeof($sql_query); $i++)
       {
@@ -863,14 +809,13 @@ else
           {
             $error = $db->sql_error();
 
-							page_header($lang['Install'], '');
-							page_error($lang['Installer_Error'], $lang['Install_db_error'] . '<br />' . $error['message']);
-							page_footer();
-							exit;
-						}
-					}
-				}
-			}
+            page_header($lang['Install'], '');
+            page_error($lang['Installer_Error'], $lang['Install_db_error'] . '<br />' . $error['message']);
+            page_footer();
+            exit;
+          }
+        }
+      }
 
 			// Ok at this point they have entered their admin password, let's go 
 			// ahead and create the admin account with some basic default information

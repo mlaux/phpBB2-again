@@ -275,19 +275,6 @@ elseif( isset($_GET['pane']) && $_GET['pane'] == 'right' )
 			$dbsize = $lang['Not_available'];
 		}
 	}
-	else if( preg_match("/^mssql/", SQL_LAYER) )
-	{
-		$sql = "SELECT ((SUM(size) * 8.0) * 1024.0) as dbsize 
-			FROM sysfiles"; 
-		if( $result = $db->sql_query($sql) )
-		{
-			$dbsize = ( $row = $db->sql_fetchrow($result) ) ? intval($row['dbsize']) : $lang['Not_available'];
-		}
-		else
-		{
-			$dbsize = $lang['Not_available'];
-		}
-	}
 	else
 	{
 		$dbsize = $lang['Not_available'];

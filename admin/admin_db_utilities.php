@@ -306,7 +306,7 @@ if( isset($_GET['perform']) || isset($_POST['perform']) )
 	{
 		case 'backup':
 
-			$error = false;
+			$error = SQL_LAYER == 'sqlite';
 
 			if ($error)
 			{

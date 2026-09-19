@@ -30,6 +30,10 @@ switch($dbms)
 	case 'mysql':
 		include($phpbb_root_path . 'db/mysql.'.$phpEx);
 		break;
+
+	case 'sqlite':
+		include($phpbb_root_path . 'db/sqlite.'.$phpEx);
+		break;
 }
 
 // Make the database connection.

@@ -330,6 +330,13 @@ $available_dbms = array(
 		'DELIM'			=> ';',
 		'DELIM_BASIC'	=> ';',
 		'COMMENTS'		=> 'remove_remarks'
+	), 
+	'sqlite' => array(
+		'LABEL'			=> 'SQLite 3',
+		'SCHEMA'		=> 'sqlite', 
+		'DELIM'			=> ';', 
+		'DELIM_BASIC'	=> ';',
+		'COMMENTS'		=> 'remove_remarks'
 	)
 );
 
@@ -729,10 +736,13 @@ else if ((empty($install_step) || $admin_pass1 != $admin_pass2 || empty($admin_p
 else
 {
 	// Go ahead and create the DB, then populate it
+	// For SQLite the "name" is a file path.
 	//
-	// MS Access is slightly different in that a pre-built, pre-
-	// populated DB is supplied, all we need do here is update
-	// the relevant entries
+	if ($dbms == 'sqlite' && $dbname == '')
+	{
+		$dbname = 'data/phpbb_' . bin2hex(random_bytes(16)) . '.db';
+	}
+
 	if (isset($dbms))
 	{
 		switch($dbms)
@@ -740,6 +750,11 @@ else
 			case 'mysql':
 				$check_exts = 'mysqli';
 				$check_other = 'mysqli';
+				break;
+
+			case 'sqlite':
+				$check_exts = 'sqlite3';
+				$check_other = 'sqlite3';
 				break;
 		}
 

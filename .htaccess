@@ -1,0 +1,10 @@
+# never serve database files
+<FilesMatch "\.(db|db3|sqlite|sqlite3)(-wal|-shm|-journal)?$">
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+	<IfModule !mod_authz_core.c>
+		Order Allow,Deny
+		Deny from All
+	</IfModule>
+</FilesMatch>

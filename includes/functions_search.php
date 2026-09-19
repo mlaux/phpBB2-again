@@ -194,6 +194,7 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 				switch( SQL_LAYER )
 				{
 					case 'mysql':
+					case 'sqlite':
 						$value_sql .= ( ( $value_sql != '' ) ? ', ' : '' ) . '(\'' . $word[$i] . '\', 0)';
 						break;
 					default:
@@ -214,6 +215,10 @@ function add_search_words($mode, $post_id, $post_text, $post_title = '')
 			{
 				case 'mysql':
 					$sql = "INSERT IGNORE INTO " . SEARCH_WORD_TABLE . " (word_text, word_common) 
+						VALUES $value_sql"; 
+					break;
+				case 'sqlite':
+					$sql = "INSERT OR IGNORE INTO " . SEARCH_WORD_TABLE . " (word_text, word_common) 
 						VALUES $value_sql"; 
 					break;
 			}

@@ -198,8 +198,8 @@ if (
 	$user_avatar_local = ( isset($_POST['avatarselect']) && !empty($_POST['submitavatar']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars($_POST['avatarselect'], ENT_COMPAT, 'ISO-8859-1') : ( ( isset($_POST['avatarlocal'])  ) ? htmlspecialchars($_POST['avatarlocal'], ENT_COMPAT, 'ISO-8859-1') : '' );
 	$user_avatar_category = ( isset($_POST['avatarcatname']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars($_POST['avatarcatname'], ENT_COMPAT, 'ISO-8859-1') : '' ;
 
-	$user_avatar_remoteurl = ( !empty($_POST['avatarremoteurl']) ) ? trim(htmlspecialchars($_POST['avatarremoteurl'])) : '';
-	$user_avatar_upload = ( !empty($_POST['avatarurl']) ) ? trim($_POST['avatarurl']) : ( ( $_FILES['avatar']['tmp_name'] != "none") ? $_FILES['avatar']['tmp_name'] : '' );
+	$user_avatar_remoteurl = ( !empty($_POST['avatarremoteurl']) ) ? trim(htmlspecialchars($_POST['avatarremoteurl'], ENT_COMPAT, 'ISO-8859-1')) : '';
+	$user_avatar_upload = ( $_FILES['avatar']['tmp_name'] != "none" ) ? $_FILES['avatar']['tmp_name'] : '';
 	$user_avatar_name = ( !empty($_FILES['avatar']['name']) ) ? $_FILES['avatar']['name'] : '';
 	$user_avatar_size = ( !empty($_FILES['avatar']['size']) ) ? $_FILES['avatar']['size'] : 0;
 	$user_avatar_filetype = ( !empty($_FILES['avatar']['type']) ) ? $_FILES['avatar']['type'] : '';
@@ -474,8 +474,7 @@ if ( isset($_POST['submit']) )
 	{
 		if ( !empty($user_avatar_upload) )
 		{
-			$avatar_mode = (empty($user_avatar_name)) ? 'remote' : 'local';
-			$avatar_sql = user_avatar_upload($mode, $avatar_mode, $userdata['user_avatar'], $userdata['user_avatar_type'], $error, $error_msg, $user_avatar_upload, $user_avatar_name, $user_avatar_size, $user_avatar_filetype);
+			$avatar_sql = user_avatar_upload($mode, $userdata['user_avatar'], $userdata['user_avatar_type'], $error, $error_msg, $user_avatar_upload, $user_avatar_name, $user_avatar_size, $user_avatar_filetype);
 		}
 		else if ( !empty($user_avatar_name) )
 		{
@@ -1160,7 +1159,6 @@ else
 				{
 					$template->assign_block_vars('switch_avatar_block.switch_avatar_local_upload', array() );
 				}
-				$template->assign_block_vars('switch_avatar_block.switch_avatar_remote_upload', array() );
 			}
 
 			if ( $board_config['allow_avatar_remote'] )

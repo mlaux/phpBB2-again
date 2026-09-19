@@ -113,7 +113,7 @@ function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 
 }
 
-function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_type, &$error, &$error_msg, $avatar_filename, $avatar_realname, $avatar_filesize, $avatar_filetype)
+function user_avatar_upload($mode, &$current_avatar, &$current_type, &$error, &$error_msg, $avatar_filename, $avatar_realname, $avatar_filesize, $avatar_filetype)
 {
 	global $board_config, $db, $lang;
 
@@ -122,74 +122,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 	$width = $height = 0;
 	$type = '';
 
-	if ( $avatar_mode == 'remote' && preg_match('/^(http:\/\/)?([\w\-\.]+)\:?([0-9]*)\/([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))$/', $avatar_filename, $url_ary) )
-	{
-		if ( empty($url_ary[4]) )
-		{
-			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Incomplete_URL'] : $lang['Incomplete_URL'];
-			return;
-		}
-
-		$base_get = '/' . $url_ary[4];
-		$port = ( !empty($url_ary[3]) ) ? $url_ary[3] : 80;
-
-		if ( !($fsock = @fsockopen($url_ary[2], $port, $errno, $errstr)) )
-		{
-			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['No_connection_URL'] : $lang['No_connection_URL'];
-			return;
-		}
-
-		@fputs($fsock, "GET $base_get HTTP/1.1\r\n");
-		@fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-		@fputs($fsock, "Connection: close\r\n\r\n");
-
-		unset($avatar_data);
-		while( !@feof($fsock) )
-		{
-			$avatar_data .= @fread($fsock, $board_config['avatar_filesize']);
-		}
-		@fclose($fsock);
-
-		if (!preg_match('#Content-Length\: ([0-9]+)[^ /][\s]+#i', $avatar_data, $file_data1) || !preg_match('#Content-Type\: image/[x\-]*([a-z]+)[\s]+#i', $avatar_data, $file_data2))
-		{
-			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
-			return;
-		}
-
-		$avatar_filesize = $file_data1[1]; 
-		$avatar_filetype = $file_data2[1]; 
-
-		if ( !$error && $avatar_filesize > 0 && $avatar_filesize < $board_config['avatar_filesize'] )
-		{
-			$avatar_data = substr($avatar_data, strlen($avatar_data) - $avatar_filesize, $avatar_filesize);
-
-			$tmp_path = ( !@$ini_val('safe_mode') ) ? '/tmp' : './' . $board_config['avatar_path'] . '/tmp';
-			$tmp_filename = tempnam($tmp_path, uniqid(rand()) . '-');
-
-			$fptr = @fopen($tmp_filename, 'wb');
-			$bytes_written = @fwrite($fptr, $avatar_data, $avatar_filesize);
-			@fclose($fptr);
-
-			if ( $bytes_written != $avatar_filesize )
-			{
-				@unlink($tmp_filename);
-				message_die(GENERAL_ERROR, 'Could not write avatar file to local storage. Please contact the board administrator with this message', '', __LINE__, __FILE__);
-			}
-
-			list($width, $height, $type) = @getimagesize($tmp_filename);
-		}
-		else
-		{
-			$l_avatar_size = sprintf($lang['Avatar_filesize'], round($board_config['avatar_filesize'] / 1024));
-
-			$error = true;
-			$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
-		}
-	}
-	else if ( ( file_exists(@phpbb_realpath($avatar_filename)) ) && preg_match('/\.(jpg|jpeg|gif|png)$/i', $avatar_realname) )
+	if ( ( file_exists(@phpbb_realpath($avatar_filename)) ) && preg_match('/\.(jpg|jpeg|gif|png)$/i', $avatar_realname) )
 	{
 		if ( $avatar_filesize <= $board_config['avatar_filesize'] && $avatar_filesize > 0 )
 		{
@@ -219,7 +152,6 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 		case 1:
 			if ($imgtype != '.gif')
 			{
-				@unlink($tmp_filename);
 				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
 			}
 		break;
@@ -232,7 +164,6 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 		case 12:
 			if ($imgtype != '.jpg' && $imgtype != '.jpeg')
 			{
-				@unlink($tmp_filename);
 				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
 			}
 		break;
@@ -241,13 +172,11 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 		case 3:
 			if ($imgtype != '.png')
 			{
-				@unlink($tmp_filename);
 				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
 			}
 		break;
 
 		default:
-			@unlink($tmp_filename);
 			message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
 	}
 
@@ -260,35 +189,27 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
 			user_avatar_delete($current_type, $current_avatar);
 		}
 
-		if( $avatar_mode == 'remote' )
+		if ( @$ini_val('open_basedir') != '' )
 		{
-			@copy($tmp_filename, './' . $board_config['avatar_path'] . "/$new_filename");
-			@unlink($tmp_filename);
+			if ( @phpversion() < '4.0.3' )
+			{
+				message_die(GENERAL_ERROR, 'open_basedir is set and your PHP version does not allow move_uploaded_file', '', __LINE__, __FILE__);
+			}
+
+			$move_file = 'move_uploaded_file';
 		}
 		else
 		{
-			if ( @$ini_val('open_basedir') != '' )
-			{
-				if ( @phpversion() < '4.0.3' )
-				{
-					message_die(GENERAL_ERROR, 'open_basedir is set and your PHP version does not allow move_uploaded_file', '', __LINE__, __FILE__);
-				}
-
-				$move_file = 'move_uploaded_file';
-			}
-			else
-			{
-				$move_file = 'copy';
-			}
-
-			if (!is_uploaded_file($avatar_filename))
-			{
-				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
-			}
-			$move_file($avatar_filename, './' . $board_config['avatar_path'] . "/$new_filename");
+			$move_file = 'copy';
 		}
 
-		@chmod('./' . $board_config['avatar_path'] . "/$new_filename", 0777);
+		if (!is_uploaded_file($avatar_filename))
+		{
+			message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+		}
+		$move_file($avatar_filename, './' . $board_config['avatar_path'] . "/$new_filename");
+
+		@chmod('./' . $board_config['avatar_path'] . "/$new_filename", 0644);
 
 		$avatar_sql = ( $mode == 'editprofile' ) ? ", user_avatar = '$new_filename', user_avatar_type = " . USER_AVATAR_UPLOAD : "'$new_filename', " . USER_AVATAR_UPLOAD;
 	}
